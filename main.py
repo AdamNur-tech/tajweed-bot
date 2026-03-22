@@ -15,34 +15,34 @@ users = {}
 
 # ===== АЛФАВИТ =====
 letters = [
-    {"letter": "ا", "name": "Алиф", "base": ""},
-    {"letter": "ب", "name": "Ба", "base": "b"},
-    {"letter": "ت", "name": "Та", "base": "t"},
-    {"letter": "ث", "name": "Са", "base": "th"},
-    {"letter": "ج", "name": "Джим", "base": "j"},
-    {"letter": "ح", "name": "Ха", "base": "ḥ"},
-    {"letter": "خ", "name": "Ха (глуб.)", "base": "kh"},
-    {"letter": "د", "name": "Даль", "base": "d"},
-    {"letter": "ذ", "name": "Заль", "base": "dh"},
-    {"letter": "ر", "name": "Ра", "base": "r"},
-    {"letter": "ز", "name": "Зай", "base": "z"},
-    {"letter": "س", "name": "Син", "base": "s"},
-    {"letter": "ش", "name": "Шин", "base": "sh"},
-    {"letter": "ص", "name": "Сад", "base": "ṣ"},
-    {"letter": "ض", "name": "Дад", "base": "ḍ"},
-    {"letter": "ط", "name": "Та (тв.)", "base": "ṭ"},
-    {"letter": "ظ", "name": "За (тв.)", "base": "ẓ"},
-    {"letter": "ع", "name": "Айн", "base": "ʿ"},
-    {"letter": "غ", "name": "Гайн", "base": "gh"},
-    {"letter": "ف", "name": "Фа", "base": "f"},
-    {"letter": "ق", "name": "Каф (глуб.)", "base": "q"},
-    {"letter": "ك", "name": "Каф", "base": "k"},
-    {"letter": "ل", "name": "Лям", "base": "l"},
-    {"letter": "م", "name": "Мим", "base": "m"},
-    {"letter": "ن", "name": "Нун", "base": "n"},
-    {"letter": "ه", "name": "Ха", "base": "h"},
-    {"letter": "و", "name": "Вау", "base": "w"},
-    {"letter": "ي", "name": "Я", "base": "y"},
+    {"letter": "ا", "name": "Алиф", "base": "", "makhraj": "горло (без преграды)"},
+    {"letter": "ب", "name": "Ба", "base": "b", "makhraj": "губы"},
+    {"letter": "ت", "name": "Та", "base": "t", "makhraj": "кончик языка + зубы"},
+    {"letter": "ث", "name": "Са", "base": "th", "makhraj": "между зубами"},
+    {"letter": "ج", "name": "Джим", "base": "j", "makhraj": "середина языка"},
+    {"letter": "ح", "name": "Ха", "base": "ḥ", "makhraj": "середина горла"},
+    {"letter": "خ", "name": "Ха (глуб.)", "base": "kh", "makhraj": "верх горла"},
+    {"letter": "د", "name": "Даль", "base": "d", "makhraj": "кончик языка"},
+    {"letter": "ذ", "name": "Заль", "base": "dh", "makhraj": "между зубами"},
+    {"letter": "ر", "name": "Ра", "base": "r", "makhraj": "кончик языка"},
+    {"letter": "ز", "name": "Зай", "base": "z", "makhraj": "зубы"},
+    {"letter": "س", "name": "Син", "base": "s", "makhraj": "зубы"},
+    {"letter": "ش", "name": "Шин", "base": "sh", "makhraj": "середина языка"},
+    {"letter": "ص", "name": "Сад", "base": "ṣ", "makhraj": "зубы (твердо)"},
+    {"letter": "ض", "name": "Дад", "base": "ḍ", "makhraj": "бок языка"},
+    {"letter": "ط", "name": "Та (тв.)", "base": "ṭ", "makhraj": "кончик языка (твердо)"},
+    {"letter": "ظ", "name": "За (тв.)", "base": "ẓ", "makhraj": "между зубами (твердо)"},
+    {"letter": "ع", "name": "Айн", "base": "ʿ", "makhraj": "глубина горла"},
+    {"letter": "غ", "name": "Гайн", "base": "gh", "makhraj": "верх горла"},
+    {"letter": "ف", "name": "Фа", "base": "f", "makhraj": "губы + зубы"},
+    {"letter": "ق", "name": "Каф (глуб.)", "base": "q", "makhraj": "глубина языка"},
+    {"letter": "ك", "name": "Каф", "base": "k", "makhraj": "язык"},
+    {"letter": "ل", "name": "Лям", "base": "l", "makhraj": "язык"},
+    {"letter": "م", "name": "Мим", "base": "m", "makhraj": "губы"},
+    {"letter": "ن", "name": "Нун", "base": "n", "makhraj": "язык + нос"},
+    {"letter": "ه", "name": "Ха", "base": "h", "makhraj": "горло"},
+    {"letter": "و", "name": "Вау", "base": "w", "makhraj": "губы"},
+    {"letter": "ي", "name": "Я", "base": "y", "makhraj": "середина языка"},
 ]
 
 # ===== USER =====
@@ -63,7 +63,7 @@ def generate_audio(text, filename="voice.mp3"):
     tts.save(filename)
     return filename
 
-# ===== ГЛАВНОЕ МЕНЮ (ТВОЁ) =====
+# ===== ГЛАВНОЕ МЕНЮ =====
 def main_menu(chat_id, user_id):
     user = get_user(user_id)
 
@@ -75,14 +75,10 @@ def main_menu(chat_id, user_id):
 ﷽
 خيركم من تعلم القرآن وعلمه
 
-«Лучший из вас — тот,
-кто изучает Коран и обучает ему»
-
 ━━━━━━━━━━━━━━━━━━━━━━
 
 👤 Уровень: {user['level']}
 ⭐ XP: {user['xp']}
-🔥 Серия: {user['streak']} дней
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -90,25 +86,13 @@ def main_menu(chat_id, user_id):
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(InlineKeyboardButton("▶️ Продолжить", callback_data="continue"))
-    markup.add(
-        InlineKeyboardButton("📚 Обучение", callback_data="learn"),
-        InlineKeyboardButton("🧠 Практика", callback_data="practice")
-    )
-    markup.add(
-        InlineKeyboardButton("🎯 Заучивание", callback_data="memorize"),
-        InlineKeyboardButton("📊 Прогресс", callback_data="progress")
-    )
-    markup.add(InlineKeyboardButton("🤖 AI Учитель", callback_data="ai"))
-
+    markup.add(InlineKeyboardButton("📚 Обучение", callback_data="learn"))
     bot.send_message(chat_id, text, reply_markup=markup)
 
 # ===== ОБУЧЕНИЕ =====
 def learn_menu(chat_id):
     text = """
 📚 ОБУЧЕНИЕ
-
-Выбери модуль:
 
 🔤 Алфавит
 """
@@ -117,7 +101,7 @@ def learn_menu(chat_id):
     markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
     bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== УРОК АЛФАВИТА =====
+# ===== УРОК =====
 def alphabet_lesson(chat_id, user_id):
     user = get_user(user_id)
     letter = letters[user["letter_index"]]
@@ -130,13 +114,17 @@ def alphabet_lesson(chat_id, user_id):
     text = f"""
 🔤 {letter['letter']} — {letter['name']}
 
+📍 Махрадж:
+{letter['makhraj']}
+
 📖 Харакаты:
 
 {letter['letter']}َ → {fatha}
 {letter['letter']}ُ → {damma}
 {letter['letter']}ِ → {kasra}
 
-📌 Чтение:
+📚 Слоги:
+
 {fatha} / {damma} / {kasra}
 
 🎧 Слушай и повторяй
@@ -156,7 +144,7 @@ def alphabet_lesson(chat_id, user_id):
 def start(message):
     bot.send_message(
         message.chat.id,
-        "♻️ Обновляем интерфейс...",
+        "🚀 Запуск...",
         reply_markup=ReplyKeyboardRemove()
     )
     main_menu(message.chat.id, message.from_user.id)
