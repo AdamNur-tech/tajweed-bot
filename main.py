@@ -53,13 +53,15 @@ def get_user(user_id):
             "xp": 0,
             "streak": 0,
             "current": "Алфавит",
+            "premium": False,
+            "step": 0,
             "letter_index": 0
         }
     return users[user_id]
 
 # ===== AUDIO =====
 def generate_audio(text, filename="voice.mp3"):
-    tts = gTTS(text=text, lang="ar", slow=True)
+    tts = gTTS(text=text, lang="ar")
     tts.save(filename)
     return filename
 
@@ -68,154 +70,135 @@ def main_menu(chat_id, user_id):
     user = get_user(user_id)
 
     text = f"""
-┏━━━━━━━━━━━━━━━━━━━━━━┓
-        📖 TAJWEED PRO
-┗━━━━━━━━━━━━━━━━━━━━━━┛
-
-﷽
-خيركم من تعلم القرآن وعلمه
-
-━━━━━━━━━━━━━━━━━━━━━━
+📖 TAJWEED PRO
 
 👤 Уровень: {user['level']}
 ⭐ XP: {user['xp']}
-
-━━━━━━━━━━━━━━━━━━━━━━
 
 🚀 Выбери действие:
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
-
     markup.add(InlineKeyboardButton("▶️ Продолжить", callback_data="continue"))
-
     markup.add(
         InlineKeyboardButton("📚 Обучение", callback_data="learn"),
         InlineKeyboardButton("🧠 Практика", callback_data="practice")
-    )
-
-    markup.add(
-        InlineKeyboardButton("🎯 Заучивание", callback_data="memorize"),
-        InlineKeyboardButton("📊 Прогресс", callback_data="progress")
-    )
-
-    markup.add(
-        InlineKeyboardButton("🤖 AI Учитель", callback_data="ai"),
-        InlineKeyboardButton("🎤 Проверка чтения", callback_data="ai_check")
     )
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
 # ===== ОБУЧЕНИЕ =====
 def learn_menu(chat_id, user_id):
-    text = """
-📚 ОБУЧЕНИЕ
-
-Выбери модуль:
-
-🔤 Алфавит
-"""
-
+    text = "📚 Обучение\n\n🔤 Алфавит"
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"))
     markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
-
     bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== АЛФАВИТ =====
+# ===== УРОК =====
 def alphabet_lesson(chat_id, user_id):
     user = get_user(user_id)
-    letter = letters[user["letter_index"]]
-    base = letter["base"]
+    step = user["step"]
+    letter_data = letters[user["letter_index"]]
 
-    # харакаты
+    letter = letter_data["letter"]
+    name = letter_data["name"]
+    base = letter_data["base"]
+
     fatha = base + "a"
     damma = base + "u"
     kasra = base + "i"
 
-    text = f"""
-🔤 {letter['letter']} — {letter['name']}
+    if step == 0:
+        text = f"""
+🔤 ШАГ 1
 
-📖 Харакаты:
-
-{letter['letter']}َ → {fatha}
-{letter['letter']}ُ → {damma}
-{letter['letter']}ِ → {kasra}
-
-📌 Чтение:
-{fatha} / {damma} / {kasra}
-
-🎧 Нажми слушать
+Буква: {letter}
+Название: {name}
 """
 
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(
-        InlineKeyboardButton("🔊 Слушать", callback_data="sound_letter"),
-        InlineKeyboardButton("➡️ Далее", callback_data="next_letter")
-    )
-    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="learn"))
+    elif step == 1:
+        text = f"""
+🗣 ШАГ 2
+
+Звук: {fatha}
+"""
+
+    elif step == 2:
+        text = f"""
+📖 ШАГ 3
+
+{letter}َ → {fatha}
+{letter}ُ → {damma}
+{letter}ِ → {kasra}
+
+{fatha} / {damma} / {kasra}
+"""
+
+    elif step == 3:
+        text = f"""
+🎯 ШАГ 4
+
+Как читается:
+
+{letter}
+"""
+
+    markup = InlineKeyboardMarkup()
+
+    if step == 1:
+        markup.add(InlineKeyboardButton("🔊 Слушать", callback_data="sound"))
+
+    if step < 3:
+        markup.add(InlineKeyboardButton("➡️ Далее", callback_data="next"))
+    else:
+        markup.add(
+            InlineKeyboardButton(fatha, callback_data="correct"),
+            InlineKeyboardButton("ошибка", callback_data="wrong")
+        )
 
     bot.send_message(chat_id, text, reply_markup=markup)
-
-# ===== START =====
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.send_message(
-        message.chat.id,
-        "🚀 Запуск...",
-        reply_markup=ReplyKeyboardRemove()
-    )
-    main_menu(message.chat.id, message.from_user.id)
 
 # ===== CALLBACK =====
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
-    user_id = call.from_user.id
+    user = get_user(call.from_user.id)
     chat_id = call.message.chat.id
-    data = call.data
 
-    user = get_user(user_id)
+    if call.data == "learn":
+        learn_menu(chat_id, call.from_user.id)
 
-    if data == "learn":
-        learn_menu(chat_id, user_id)
-
-    elif data == "alphabet":
+    elif call.data == "alphabet":
+        user["step"] = 0
         user["letter_index"] = 0
-        alphabet_lesson(chat_id, user_id)
+        alphabet_lesson(chat_id, call.from_user.id)
 
-    elif data == "next_letter":
-        user["letter_index"] += 1
-        if user["letter_index"] < len(letters):
-            alphabet_lesson(chat_id, user_id)
-        else:
-            bot.send_message(chat_id, "🎉 Алфавит завершён!")
-            user["letter_index"] = 0
+    elif call.data == "next":
+        user["step"] += 1
+        if user["step"] > 3:
+            user["step"] = 0
+            user["letter_index"] += 1
+        alphabet_lesson(chat_id, call.from_user.id)
 
-    elif data == "sound_letter":
+    elif call.data == "sound":
         letter = letters[user["letter_index"]]["letter"]
-        file = generate_audio(letter)
-        bot.send_voice(chat_id, open(file, "rb"))
+        bot.send_voice(chat_id, open(generate_audio(letter), "rb"))
 
-    elif data == "back_main":
-        main_menu(chat_id, user_id)
+    elif call.data == "correct":
+        bot.send_message(chat_id, "✅ Правильно")
+        user["step"] = 0
+        user["letter_index"] += 1
+        alphabet_lesson(chat_id, call.from_user.id)
 
-    elif data == "continue":
-        bot.send_message(chat_id, "🚀 Продолжение скоро будет")
+    elif call.data == "wrong":
+        bot.send_message(chat_id, "❌ Ошибка")
+        alphabet_lesson(chat_id, call.from_user.id)
 
-    elif data == "practice":
-        bot.send_message(chat_id, "🧠 Практика скоро будет")
-
-    elif data == "memorize":
-        bot.send_message(chat_id, "🎯 Заучивание скоро будет")
-
-    elif data == "progress":
-        bot.send_message(chat_id, "📊 Прогресс скоро будет")
-
-    elif data == "ai":
-        bot.send_message(chat_id, "🤖 Напиши свой вопрос")
-
-    elif data == "ai_check":
-        bot.send_message(chat_id, "🎤 Отправь голос")
+# ===== START =====
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.chat.id, "🚀 Запуск...", reply_markup=ReplyKeyboardRemove())
+    main_menu(message.chat.id, message.from_user.id)
 
 # ===== RUN =====
 print("🚀 Бот запущен")
