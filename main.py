@@ -1,175 +1,164 @@
 import os
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardRemove
+from telebot.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    ReplyKeyboardRemove
+)
 from gtts import gTTS
 
+# ===== CONFIG =====
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(BOT_TOKEN)
 
 users = {}
 
-# ===== АЛФАВИТ (ПРАВИЛЬНЫЙ) =====
+# ===== АЛФАВИТ =====
 letters = [
-    {"letter": "ا", "name": "Алиф", "sound": "a", "makhraj": "из горла (без контакта)"},
-    {"letter": "ب", "name": "Ба", "sound": "ba", "makhraj": "губы"},
-    {"letter": "ت", "name": "Та", "sound": "ta", "makhraj": "кончик языка + зубы"},
-    {"letter": "ث", "name": "Са", "sound": "tha", "makhraj": "язык между зубами"},
-    {"letter": "ج", "name": "Джим", "sound": "ja", "makhraj": "середина языка"},
-    {"letter": "ح", "name": "Ха", "sound": "ḥa", "makhraj": "середина горла"},
-    {"letter": "خ", "name": "Ха (глубокое)", "sound": "kha", "makhraj": "верх горла"},
-    {"letter": "د", "name": "Даль", "sound": "da", "makhraj": "кончик языка"},
-    {"letter": "ذ", "name": "Заль", "sound": "dha", "makhraj": "между зубами"},
-    {"letter": "ر", "name": "Ра", "sound": "ra", "makhraj": "кончик языка"},
-    {"letter": "ز", "name": "Зай", "sound": "za", "makhraj": "зубы"},
-    {"letter": "س", "name": "Син", "sound": "sa", "makhraj": "зубы"},
-    {"letter": "ش", "name": "Шин", "sound": "sha", "makhraj": "середина языка"},
-    {"letter": "ص", "name": "Сад", "sound": "ṣa", "makhraj": "зубы (твердо)"},
-    {"letter": "ض", "name": "Дад", "sound": "ḍa", "makhraj": "бок языка"},
-    {"letter": "ط", "name": "Та (твердая)", "sound": "ṭa", "makhraj": "кончик языка (твердо)"},
-    {"letter": "ظ", "name": "За (твердая)", "sound": "ẓa", "makhraj": "между зубами (твердо)"},
-    {"letter": "ع", "name": "Айн", "sound": "ʿa", "makhraj": "глубина горла"},
-    {"letter": "غ", "name": "Гайн", "sound": "gha", "makhraj": "верх горла"},
-    {"letter": "ف", "name": "Фа", "sound": "fa", "makhraj": "губы + зубы"},
-    {"letter": "ق", "name": "Каф (глубокая)", "sound": "qa", "makhraj": "глубина языка"},
-    {"letter": "ك", "name": "Каф", "sound": "ka", "makhraj": "язык"},
-    {"letter": "ل", "name": "Лям", "sound": "la", "makhraj": "язык"},
-    {"letter": "م", "name": "Мим", "sound": "ma", "makhraj": "губы"},
-    {"letter": "ن", "name": "Нун", "sound": "na", "makhraj": "язык + нос"},
-    {"letter": "ه", "name": "Ха", "sound": "ha", "makhraj": "горло"},
-    {"letter": "و", "name": "Вау", "sound": "wa", "makhraj": "губы"},
-    {"letter": "ي", "name": "Я", "sound": "ya", "makhraj": "середина языка"},
+    {"letter": "ا", "name": "Алиф", "base": ""},
+    {"letter": "ب", "name": "Ба", "base": "b"},
+    {"letter": "ت", "name": "Та", "base": "t"},
+    {"letter": "ث", "name": "Са", "base": "th"},
+    {"letter": "ج", "name": "Джим", "base": "j"},
+    {"letter": "ح", "name": "Ха", "base": "ḥ"},
+    {"letter": "خ", "name": "Ха (глуб.)", "base": "kh"},
+    {"letter": "د", "name": "Даль", "base": "d"},
+    {"letter": "ذ", "name": "Заль", "base": "dh"},
+    {"letter": "ر", "name": "Ра", "base": "r"},
+    {"letter": "ز", "name": "Зай", "base": "z"},
+    {"letter": "س", "name": "Син", "base": "s"},
+    {"letter": "ش", "name": "Шин", "base": "sh"},
+    {"letter": "ص", "name": "Сад", "base": "ṣ"},
+    {"letter": "ض", "name": "Дад", "base": "ḍ"},
+    {"letter": "ط", "name": "Та (тв.)", "base": "ṭ"},
+    {"letter": "ظ", "name": "За (тв.)", "base": "ẓ"},
+    {"letter": "ع", "name": "Айн", "base": "ʿ"},
+    {"letter": "غ", "name": "Гайн", "base": "gh"},
+    {"letter": "ف", "name": "Фа", "base": "f"},
+    {"letter": "ق", "name": "Каф (глуб.)", "base": "q"},
+    {"letter": "ك", "name": "Каф", "base": "k"},
+    {"letter": "ل", "name": "Лям", "base": "l"},
+    {"letter": "م", "name": "Мим", "base": "m"},
+    {"letter": "ن", "name": "Нун", "base": "n"},
+    {"letter": "ه", "name": "Ха", "base": "h"},
+    {"letter": "و", "name": "Вау", "base": "w"},
+    {"letter": "ي", "name": "Я", "base": "y"},
 ]
 
 # ===== USER =====
 def get_user(user_id):
     if user_id not in users:
         users[user_id] = {
-            "level": 0,
+            "level": "Новичок",
             "xp": 0,
-            "step": 0,
-            "lesson_msg": None
+            "streak": 0,
+            "current": "Алфавит",
+            "letter_index": 0
         }
     return users[user_id]
 
 # ===== AUDIO =====
-def generate_audio(text):
+def generate_audio(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="ar", slow=True)
-    tts.save("voice.mp3")
-    return "voice.mp3"
+    tts.save(filename)
+    return filename
 
-# ===== ПРОГРЕСС =====
-def progress_bar(step):
-    total = 4
-    return "🟩" * step + "⬜" * (total - step)
-
-# ===== МЕНЮ =====
+# ===== ГЛАВНОЕ МЕНЮ (ТВОЁ) =====
 def main_menu(chat_id, user_id):
     user = get_user(user_id)
 
     text = f"""
-📖 TAJWEED PRO
+┏━━━━━━━━━━━━━━━━━━━━━━┓
+        📖 TAJWEED PRO
+┗━━━━━━━━━━━━━━━━━━━━━━┛
 
+﷽
 خيركم من تعلم القرآن وعلمه
 
-👤 Уровень: {user['level']+1}/{len(letters)}
-⭐ XP: {user['xp']}
+«Лучший из вас — тот,
+кто изучает Коран и обучает ему»
 
-🚀 Начни обучение
+━━━━━━━━━━━━━━━━━━━━━━
+
+👤 Уровень: {user['level']}
+⭐ XP: {user['xp']}
+🔥 Серия: {user['streak']} дней
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 Выбери действие:
 """
 
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("▶️ Начать", callback_data="start"))
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(InlineKeyboardButton("▶️ Продолжить", callback_data="continue"))
+    markup.add(
+        InlineKeyboardButton("📚 Обучение", callback_data="learn"),
+        InlineKeyboardButton("🧠 Практика", callback_data="practice")
+    )
+    markup.add(
+        InlineKeyboardButton("🎯 Заучивание", callback_data="memorize"),
+        InlineKeyboardButton("📊 Прогресс", callback_data="progress")
+    )
+    markup.add(InlineKeyboardButton("🤖 AI Учитель", callback_data="ai"))
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== УРОК =====
-def lesson(chat_id, user_id, message_id=None):
+# ===== ОБУЧЕНИЕ =====
+def learn_menu(chat_id):
+    text = """
+📚 ОБУЧЕНИЕ
+
+Выбери модуль:
+
+🔤 Алфавит
+"""
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"))
+    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
+    bot.send_message(chat_id, text, reply_markup=markup)
+
+# ===== УРОК АЛФАВИТА =====
+def alphabet_lesson(chat_id, user_id):
     user = get_user(user_id)
-    letter = letters[user["level"]]
-    step = user["step"]
-    bar = progress_bar(step)
+    letter = letters[user["letter_index"]]
+    base = letter["base"]
 
-    if step == 0:
-        text = f"""
-{bar}
+    fatha = base + "a"
+    damma = base + "u"
+    kasra = base + "i"
 
-🔤 БУКВА: {letter['letter']}
+    text = f"""
+🔤 {letter['letter']} — {letter['name']}
 
-Название: {letter['name']}
+📖 Харакаты:
 
-📌 Чтение: {letter['sound']}
+{letter['letter']}َ → {fatha}
+{letter['letter']}ُ → {damma}
+{letter['letter']}ِ → {kasra}
+
+📌 Чтение:
+{fatha} / {damma} / {kasra}
+
+🎧 Слушай и повторяй
 """
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("Далее ➡️", callback_data="next"))
 
-    elif step == 1:
-        text = f"""
-{bar}
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("🔊 Слушать", callback_data="sound"),
+        InlineKeyboardButton("➡️ Далее", callback_data="next")
+    )
+    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="learn"))
 
-🗣 ПРОИЗНОШЕНИЕ
-
-Звук: {letter['sound']}
-
-📍 Махрадж:
-{letter['makhraj']}
-
-❌ не искажай звук
-"""
-        markup = InlineKeyboardMarkup()
-        markup.add(
-            InlineKeyboardButton("🔊 Слушать", callback_data="sound"),
-            InlineKeyboardButton("Далее ➡️", callback_data="next")
-        )
-
-    elif step == 2:
-        text = f"""
-{bar}
-
-📖 ПРИМЕРЫ
-
-{letter['letter']}َ  
-{letter['letter']}ُ  
-{letter['letter']}ِ  
-
-👉 тренируй короткие звуки
-"""
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("Далее ➡️", callback_data="next"))
-
-    elif step == 3:
-        correct = letter["sound"]
-
-        text = f"""
-{bar}
-
-🎯 ТЕСТ
-
-Как читается:
-
-{letter['letter']}
-"""
-        markup = InlineKeyboardMarkup(row_width=2)
-        markup.add(
-            InlineKeyboardButton(correct, callback_data="correct"),
-            InlineKeyboardButton("ba", callback_data="wrong"),
-            InlineKeyboardButton("ta", callback_data="wrong"),
-            InlineKeyboardButton("sa", callback_data="wrong"),
-        )
-
-    try:
-        if message_id:
-            bot.edit_message_text(text, chat_id, message_id, reply_markup=markup)
-        else:
-            msg = bot.send_message(chat_id, text, reply_markup=markup)
-            return msg.message_id
-    except:
-        msg = bot.send_message(chat_id, text, reply_markup=markup)
-        return msg.message_id
+    bot.send_message(chat_id, text, reply_markup=markup)
 
 # ===== START =====
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, "♻️ Загрузка...", reply_markup=ReplyKeyboardRemove())
+    bot.send_message(
+        message.chat.id,
+        "♻️ Обновляем интерфейс...",
+        reply_markup=ReplyKeyboardRemove()
+    )
     main_menu(message.chat.id, message.from_user.id)
 
 # ===== CALLBACK =====
@@ -181,37 +170,30 @@ def callback(call):
 
     user = get_user(user_id)
 
-    if data == "start":
-        user["step"] = 0
-        msg_id = lesson(chat_id, user_id)
-        user["lesson_msg"] = msg_id
+    if data == "learn":
+        learn_menu(chat_id)
+
+    elif data == "alphabet":
+        user["letter_index"] = 0
+        alphabet_lesson(chat_id, user_id)
 
     elif data == "next":
-        user["step"] += 1
-        lesson(chat_id, user_id, user["lesson_msg"])
+        user["letter_index"] += 1
+        if user["letter_index"] < len(letters):
+            alphabet_lesson(chat_id, user_id)
+        else:
+            bot.send_message(chat_id, "🎉 Алфавит завершён!")
+            user["letter_index"] = 0
 
     elif data == "sound":
-        letter = letters[user["level"]]
-        file = generate_audio(letter["letter"])
+        letter = letters[user["letter_index"]]["letter"]
+        file = generate_audio(letter)
         audio = open(file, "rb")
         bot.send_voice(chat_id, audio)
 
-    elif data == "correct":
-        user["xp"] += 10
-        bot.answer_callback_query(call.id, "✅ Правильно!")
-
-        user["level"] += 1
-        user["step"] = 0
-
-        if user["level"] >= len(letters):
-            bot.send_message(chat_id, "🎉 Ты прошёл алфавит!")
-        else:
-            msg_id = lesson(chat_id, user_id)
-            user["lesson_msg"] = msg_id
-
-    elif data == "wrong":
-        bot.answer_callback_query(call.id, "❌ Ошибка")
+    elif data == "back_main":
+        main_menu(chat_id, user_id)
 
 # ===== RUN =====
-print("🚀 BOT STARTED")
+print("🚀 Бот запущен")
 bot.polling(none_stop=True)
