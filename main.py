@@ -1,167 +1,144 @@
 import os
 import telebot
-from telebot.types import ReplyKeyboardMarkup
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from openai import OpenAI
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-bot = telebot.TeleBot(BOT_TOKEN)
-client = OpenAI(api_key=OPENAI_API_KEY)
+bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 users = {}
 
-FREE_LIMIT = 3
-
-# --- УРОКИ ПО УРОВНЯМ ---
 LESSONS = {
-1: "📚 Алиф Ба Та:\nا ب ت\nПовтори вслух",
-2: "📚 Все буквы:\nا ب ت ث ج ح خ د ...",
-3: "📚 Формы букв:\nب بـ ـبـ ـب",
-4: "📚 Фатха:\nبَ = БА",
-5: "📚 Касра:\nبِ = БИ",
-6: "📚 Дамма:\nبُ = БУ",
-7: "📚 Сукун:\nبْ",
-8: "📚 Танвин:\nً ٍ ٌ",
-9: "📚 Чтение:\nبَتَ = БАТА",
-10: "📚 Нун сакина:\n4 правила",
-11: "📚 Мим сакина:\n3 правила",
-12: "📚 Мадд:\n2 хараката",
-13: "📚 Калькаля:\nق ط ب ج د",
-14: "📚 Толстые буквы:\nص ض ط ظ",
-15: "📚 Ра и Лям",
-16: "📚 Вакф (остановка)",
-17: "📚 Ошибки таджвида"
+1: "📚 Урок 1: Алиф Ба Та\nا ب ت\nПовтори",
+2: "📚 Урок 2: Харакаты\nبَ بِ بُ",
+3: "📚 Урок 3: Сукун\nبْ",
+4: "📚 Урок 4: Нун сакина\n4 правила",
+5: "📚 Урок 5: Мадд\n2 хараката",
 }
 
-# --- ТЕСТЫ ---
 QUIZ = {
-1: ("Какая буква это: ا ?", "алиф"),
-4: ("Как читается بَ ?", "ба"),
-10: ("Сколько правил у нун сакина?", "4"),
-12: ("Сколько харакат у мадда?", "2"),
+1: ("Что это: ا ?", "алиф"),
+2: ("بَ читается как?", "ба"),
+3: ("Что значит сукун?", "нет гласной"),
+4: ("Сколько правил нун?", "4"),
+5: ("Сколько харакат мадд?", "2"),
 }
 
-# --- МЕНЮ ---
-def menu():
-    m = ReplyKeyboardMarkup(resize_keyboard=True)
-    m.add("📚 Урок", "🧠 Тест")
-    m.add("🎤 Практика", "📊 Прогресс")
-    return m
+# --- UI ---
+def main_menu():
+    kb = InlineKeyboardMarkup()
+    kb.add(InlineKeyboardButton("📚 Начать обучение", callback_data="learn"))
+    kb.add(InlineKeyboardButton("🎤 Проверить чтение", callback_data="voice"))
+    kb.add(InlineKeyboardButton("📊 Прогресс", callback_data="progress"))
+    return kb
 
-# --- СТАРТ ---
+def next_btn():
+    kb = InlineKeyboardMarkup()
+    kb.add(InlineKeyboardButton("➡️ Далее", callback_data="next"))
+    return kb
+
+def quiz_btn():
+    kb = InlineKeyboardMarkup()
+    kb.add(InlineKeyboardButton("🧠 Пройти тест", callback_data="quiz"))
+    return kb
+
+# --- START ---
 @bot.message_handler(commands=['start'])
 def start(m):
     uid = m.from_user.id
 
     if uid not in users:
-        users[uid] = {
-            "level": 1,
-            "xp": 0,
-            "step": None,
-            "used": 0
-        }
+        users[uid] = {"level":1, "step":"menu"}
 
     bot.send_message(m.chat.id,
         "🎓 Медресе таджвида\n\n"
-        "Ты начинаешь с нуля и дойдёшь до уровня кари 📖\n\n"
-        "Выбери:",
-        reply_markup=menu())
+        "Ты пройдёшь путь до уровня кари 📖",
+        reply_markup=main_menu())
 
-# --- УРОК ---
-@bot.message_handler(func=lambda m: m.text == "📚 Урок")
-def lesson(m):
-    user = users[m.chat.id]
-    lvl = user["level"]
+# --- КНОПКИ ---
+@bot.callback_query_handler(func=lambda call: True)
+def handler(call):
+    uid = call.from_user.id
+    user = users[uid]
 
-    bot.send_message(m.chat.id, LESSONS.get(lvl, "🎓 Ты прошёл курс!"))
+    # --- НАЧАТЬ ---
+    if call.data == "learn":
+        lvl = user["level"]
+        bot.send_message(call.message.chat.id, LESSONS[lvl], reply_markup=quiz_btn())
+        user["step"] = "lesson"
 
-# --- ТЕСТ ---
-@bot.message_handler(func=lambda m: m.text == "🧠 Тест")
-def quiz(m):
-    user = users[m.chat.id]
-    lvl = user["level"]
+    # --- ТЕСТ ---
+    elif call.data == "quiz":
+        lvl = user["level"]
+        q,_ = QUIZ[lvl]
 
-    if lvl not in QUIZ:
-        bot.send_message(m.chat.id, "📚 Сначала изучи урок")
-        return
+        bot.send_message(call.message.chat.id, f"❓ {q}")
+        user["step"] = "quiz"
 
-    q, _ = QUIZ[lvl]
-    users[m.chat.id]["step"] = "quiz"
+    # --- ДАЛЕЕ ---
+    elif call.data == "next":
+        user["level"] += 1
+        lvl = user["level"]
 
-    bot.send_message(m.chat.id, f"❓ {q}")
+        if lvl in LESSONS:
+            bot.send_message(call.message.chat.id, LESSONS[lvl], reply_markup=quiz_btn())
+        else:
+            bot.send_message(call.message.chat.id, "🎉 Ты прошёл курс!")
 
-@bot.message_handler(func=lambda m: users.get(m.chat.id, {}).get("step") == "quiz")
+    # --- ПРОГРЕСС ---
+    elif call.data == "progress":
+        bot.send_message(call.message.chat.id,
+            f"📊 Уровень: {user['level']}")
+
+    # --- ГОЛОС ---
+    elif call.data == "voice":
+        bot.send_message(call.message.chat.id,
+            "🎤 Отправь голосовое с чтением")
+
+# --- ОТВЕТ НА ТЕСТ ---
+@bot.message_handler(func=lambda m: users.get(m.from_user.id,{}).get("step")=="quiz")
 def answer(m):
-    user = users[m.chat.id]
+    uid = m.from_user.id
+    user = users[uid]
     lvl = user["level"]
 
-    _, correct = QUIZ.get(lvl, ("", ""))
+    _,correct = QUIZ[lvl]
 
     if correct in m.text.lower():
-        user["xp"] += 10
-        user["level"] += 1
-        bot.send_message(m.chat.id, "✅ Верно! Уровень повышен 🔥")
+        bot.send_message(m.chat.id, "✅ Правильно!", reply_markup=next_btn())
     else:
-        bot.send_message(m.chat.id, f"❌ Неправильно. Ответ: {correct}")
+        bot.send_message(m.chat.id, f"❌ Неправильно\nОтвет: {correct}")
 
-    user["step"] = None
+    user["step"] = "menu"
 
 # --- ГОЛОС ---
 @bot.message_handler(content_types=['voice'])
 def voice(m):
-    uid = m.from_user.id
-    user = users[uid]
-
-    if user["used"] >= FREE_LIMIT:
-        bot.send_message(m.chat.id, "❌ Лимит. Напиши /buy")
-        return
-
-    user["used"] += 1
-
-    bot.send_message(m.chat.id, "🎧 Проверяю чтение...")
+    bot.send_message(m.chat.id, "🎧 Анализ...")
 
     file = bot.get_file(m.voice.file_id)
     audio = bot.download_file(file.file_path)
 
-    with open("voice.ogg", "wb") as f:
+    with open("voice.ogg","wb") as f:
         f.write(audio)
 
-    with open("voice.ogg", "rb") as f:
+    with open("voice.ogg","rb") as f:
         t = client.audio.transcriptions.create(
             model="gpt-4o-mini-transcribe",
             file=f
         )
 
-    text = t.text
-
     res = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role":"system","content":
-             "Ты учитель таджвида. Найди ошибки и дай совет"},
-            {"role":"user","content":text}
+            {"role":"system","content":"Проверь таджвид и укажи ошибки"},
+            {"role":"user","content":t.text}
         ]
     )
 
     bot.send_message(m.chat.id,
-        f"📖 {text}\n\n🧠 {res.choices[0].message.content}"
+        f"📖 {t.text}\n\n🧠 {res.choices[0].message.content}"
     )
 
-# --- ПРОГРЕСС ---
-@bot.message_handler(func=lambda m: m.text == "📊 Прогресс")
-def progress(m):
-    user = users[m.chat.id]
-
-    bot.send_message(m.chat.id,
-        f"📊 Уровень: {user['level']}\nXP: {user['xp']}")
-
-# --- ПОКУПКА ---
-@bot.message_handler(commands=['buy'])
-def buy(m):
-    bot.send_message(m.chat.id,
-        "💰 Доступ без лимита — 5€\nНапиши @your_username")
-
-# --- ЗАПУСК ---
-print("БОТ МЕДРЕСЕ ЗАПУЩЕН 🚀")
+print("APP BOT RUNNING 🚀")
 bot.infinity_polling()
