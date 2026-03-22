@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tajweed AI</title>
+
+<style>
+body {margin:0;font-family:sans-serif;background:#0f172a;color:white;}
+.header{padding:15px;text-align:center;background:#020617;font-size:20px;}
+.screen{padding:20px;}
+.card{background:#1e293b;padding:20px;border-radius:15px;margin-top:15px;}
+.big{font-size:60px;text-align:center;}
+button{
+width:100%;padding:15px;margin-top:10px;
+border:none;border-radius:12px;
+background:#22c55e;color:white;font-size:16px;
+}
+.secondary{background:#334155;}
+.progress{height:10px;background:#334155;border-radius:10px;margin-top:10px;}
+.bar{height:10px;background:#22c55e;border-radius:10px;width:0%;}
+.hidden{display:none;}
+</style>
+</head>
+
+<body>
+
+<div class="header">🕌 Tajweed AI PRO</div>
+
+<!-- HOME -->
+<div id="home" class="screen">
+<button onclick="start()">📚 Начать</button>
+<button class="secondary" onclick="openVoice()">🎤 Практика</button>
+</div>
+
+<!-- LESSON -->
+<div id="lesson" class="screen hidden">
+<div class="card">
+<div class="big" id="letter"></div>
+<p id="text"></p>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<button onclick="quiz()">Далее</button>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="screen hidden">
+<div class="card">
+<h3 id="q"></h3>
+<button onclick="answer(0)" id="a0"></button>
+<button onclick="answer(1)" id="a1"></button>
+<button onclick="answer(2)" id="a2"></button>
+</div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen hidden">
+<div class="card">
+<h2 id="res"></h2>
+<button onclick="next()">Дальше</button>
+</div>
+</div>
+
+<!-- VOICE -->
+<div id="voice" class="screen hidden">
+<div class="card">
+<h3>🎤 Запись чтения</h3>
+<button onclick="startRec()">Начать</button>
+<button onclick="stopRec()">Остановить</button>
+<p id="voiceStatus"></p>
+</div>
+</div>
+
+<script>
+
+let level = localStorage.getItem("level") || 0;
+
+const course = [
+{l:"ا",t:"Алиф — звук А",q:"Это какая буква?",opts:["Алиф","Ба","Та"],c:0},
+{l:"ب",t:"Ба — звук Б\nبَ БА\nبِ БИ\nبُ БУ",q:"Как читается بِ ?",opts:["БА","БИ","БУ"],c:1},
+{l:"ت",t:"Та — звук Т",q:"Как читается تَ ?",opts:["ТА","БА","НА"],c:0},
+{l:"ث",t:"Са — язык между зубами",q:"Как читается ثَ ?",opts:["СА","ТА","КА"],c:0},
+{l:"ج",t:"Джим — ДЖ",q:"Как читается جَ ?",opts:["ЖА","ДЖА","ГА"],c:1},
+
+{l:"بَ",t:"Фатха = А",q:"Как читается بَ ?",opts:["БА","БИ","БУ"],c:0},
+{l:"بِ",t:"Касра = И",q:"Как читается بِ ?",opts:["БА","БИ","БУ"],c:1},
+
+{l:"مِنْ",t:"Нун сакина (4 правила)",q:"Сколько правил?",opts:["2","3","4"],c:2},
+{l:"قَالَ",t:"Мадд (удлинение)",q:"Сколько харакат?",opts:["2","4","6"],c:0}
+];
+
+function start(){
+show("lesson");
+load();
+}
+
+function load(){
+let x = course[level];
+document.getElementById("letter").innerText = x.l;
+document.getElementById("text").innerText = x.t;
+
+let p = (level/course.length)*100;
+document.getElementById("bar").style.width = p+"%";
+}
+
+function quiz(){
+show("quiz");
+let x = course[level];
+document.getElementById("q").innerText = x.q;
+x.opts.forEach((o,i)=>document.getElementById("a"+i).innerText=o);
+}
+
+function answer(i){
+show("result");
+document.getElementById("res").innerText =
+i==course[level].c ? "✅ Правильно" : "❌ Ошибка";
+}
+
+function next(){
+level++;
+localStorage.setItem("level", level);
+
+if(level>=course.length){
+alert("🎉 Курс завершён");
+localStorage.setItem("level",0);
+location.reload();
+return;
+}
+
+show("lesson");
+load();
+}
+
+function openVoice(){
+show("voice");
+}
+
+let rec, chunks=[];
+
+async function startRec(){
+const s = await navigator.mediaDevices.getUserMedia({audio:true});
+rec = new MediaRecorder(s);
+chunks=[];
+
+rec.ondataavailable=e=>chunks.push(e.data);
+rec.start();
+
+document.getElementById("voiceStatus").innerText="Запись...";
+}
+
+function stopRec(){
+rec.stop();
+rec.onstop=()=>{
+document.getElementById("voiceStatus").innerText=
+"Записано. Здесь подключается AI анализ.";
+};
+}
+
+function show(id){
+["home","lesson","quiz","result","voice"].forEach(x=>{
+document.getElementById(x).classList.add("hidden");
+});
+document.getElementById(id).classList.remove("hidden");
+}
+
+</script>
+
+</body>
+</html>
