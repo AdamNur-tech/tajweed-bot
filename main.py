@@ -174,11 +174,11 @@ def callback(call):
 
 
 # ===== ЗАПУСК =====
-print("🚀 Бот запущен")
-bot.polling(none_stop=True)
-@bot.message_handler(func=lambda message: True)
 def handle_all(message):
     if message.text == "/start":
         main_menu(message.chat.id, message.from_user.id)
     else:
         bot.send_message(message.chat.id, "Нажми /start")
+print("🚀 Бот запущен")
+bot.polling(none_stop=True)
+@bot.message_handler(func=lambda message: True)
