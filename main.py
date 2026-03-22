@@ -47,6 +47,48 @@ letters = [
     {"l":"ي","name":"Ya","base":"y","makhraj":"Средняя часть языка поднимается."},
 ]
 
+# ===== ФОРМЫ БУКВ =====
+def forms_lesson(chat_id):
+    text = """
+🔡 ФОРМЫ БУКВ
+
+ا — не соединяется справа
+ب بـ ـبـ ـب
+ت تـ ـتـ ـت
+ث ثـ ـثـ ـث
+ج جـ ـجـ ـج
+ح حـ ـحـ ـح
+خ خـ ـخـ ـخ
+د — не соединяется справа
+ذ — не соединяется справа
+ر — не соединяется справа
+ز — не соединяется справа
+س سـ ـсـ ـс
+ش شـ ـشـ ـش
+ص صـ ـصـ ـص
+ض ضـ ـضـ ـض
+ط طـ ـطـ ـط
+ظ ظـ ـظـ ـظ
+ع عـ ـعـ ـع
+غ غـ ـغـ ـغ
+ف فـ ـفـ ـف
+ق قـ ـقـ ـق
+ك كـ ـكـ ـك
+ل لـ ـلـ ـل
+م مـ ـمـ ـم
+ن نـ ـنـ ـن
+ه هـ ـهـ ـه
+و — не соединяется справа
+ي يـ ـيـ ـي
+
+📌 ا د ذ ر ز و не соединяются справа
+"""
+
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="learn"))
+
+    bot.send_message(chat_id, text, reply_markup=markup)
+
 # ===== USER =====
 def get_user(user_id):
     if user_id not in users:
@@ -115,11 +157,15 @@ def main_menu(chat_id, user_id):
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== ОБУЧЕНИЕ =====
+# ===== ОБУЧЕНИЕ (ИСПРАВЛЕНО) =====
 def learn_menu(chat_id, user_id):
     markup = InlineKeyboardMarkup()
+
     markup.add(InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"))
+    markup.add(InlineKeyboardButton("🔡 Формы букв", callback_data="forms"))
+
     markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
+
     bot.send_message(chat_id, "📚 ОБУЧЕНИЕ", reply_markup=markup)
 
 # ===== УРОК =====
@@ -191,6 +237,9 @@ def callback(call):
         user["step"] = 0
         user["letter_index"] = 0
         alphabet_lesson(chat_id, call.from_user.id)
+
+    elif call.data == "forms":
+        forms_lesson(chat_id)
 
     elif call.data == "to_test":
         user["step"] = 1
