@@ -2,167 +2,117 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tajweed AI</title>
-
+<title>Tajweed AI PRO</title>
 <style>
-body {margin:0;font-family:sans-serif;background:#0f172a;color:white;}
-.header{padding:15px;text-align:center;background:#020617;font-size:20px;}
-.screen{padding:20px;}
-.card{background:#1e293b;padding:20px;border-radius:15px;margin-top:15px;}
-.big{font-size:60px;text-align:center;}
-button{
-width:100%;padding:15px;margin-top:10px;
-border:none;border-radius:12px;
-background:#22c55e;color:white;font-size:16px;
-}
-.secondary{background:#334155;}
-.progress{height:10px;background:#334155;border-radius:10px;margin-top:10px;}
-.bar{height:10px;background:#22c55e;border-radius:10px;width:0%;}
-.hidden{display:none;}
+body{margin:0;font-family:system-ui;background:#0f172a;color:#fff}
+.header{padding:14px;text-align:center;background:#020617}
+.wrap{padding:16px}
+.card{background:#1e293b;border-radius:14px;padding:16px;margin-top:12px}
+.big{font-size:54px;text-align:center;margin:8px 0}
+button{width:100%;padding:14px;margin-top:10px;border:0;border-radius:12px;background:#22c55e;color:#fff}
+.alt{background:#334155}
+.progress{height:8px;background:#334155;border-radius:8px;margin-top:8px}
+.bar{height:8px;background:#22c55e;border-radius:8px;width:0%}
+.hidden{display:none}
 </style>
 </head>
-
 <body>
 
 <div class="header">🕌 Tajweed AI PRO</div>
 
-<!-- HOME -->
-<div id="home" class="screen">
-<button onclick="start()">📚 Начать</button>
-<button class="secondary" onclick="openVoice()">🎤 Практика</button>
+<div id="home" class="wrap">
+  <button onclick="start()">📚 Продолжить</button>
+  <button class="alt" onclick="askAI()">🧠 Спросить учителя</button>
 </div>
 
-<!-- LESSON -->
-<div id="lesson" class="screen hidden">
-<div class="card">
-<div class="big" id="letter"></div>
-<p id="text"></p>
-<div class="progress"><div id="bar" class="bar"></div></div>
-<button onclick="quiz()">Далее</button>
-</div>
-</div>
-
-<!-- QUIZ -->
-<div id="quiz" class="screen hidden">
-<div class="card">
-<h3 id="q"></h3>
-<button onclick="answer(0)" id="a0"></button>
-<button onclick="answer(1)" id="a1"></button>
-<button onclick="answer(2)" id="a2"></button>
-</div>
+<div id="lesson" class="wrap hidden">
+  <div class="card">
+    <div class="big" id="l_title"></div>
+    <div id="l_text"></div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <button onclick="toQuiz()">Далее</button>
+  </div>
 </div>
 
-<!-- RESULT -->
-<div id="result" class="screen hidden">
-<div class="card">
-<h2 id="res"></h2>
-<button onclick="next()">Дальше</button>
-</div>
+<div id="quiz" class="wrap hidden">
+  <div class="card">
+    <h3 id="q_text"></h3>
+    <button id="a0" onclick="answer(0)"></button>
+    <button id="a1" onclick="answer(1)"></button>
+    <button id="a2" onclick="answer(2)"></button>
+  </div>
 </div>
 
-<!-- VOICE -->
-<div id="voice" class="screen hidden">
-<div class="card">
-<h3>🎤 Запись чтения</h3>
-<button onclick="startRec()">Начать</button>
-<button onclick="stopRec()">Остановить</button>
-<p id="voiceStatus"></p>
-</div>
+<div id="result" class="wrap hidden">
+  <div class="card">
+    <h2 id="res"></h2>
+    <button onclick="next()">Дальше</button>
+  </div>
 </div>
 
 <script>
+const params = new URLSearchParams(location.search);
+let uid = params.get("uid") || "1"; // для теста
 
-let level = localStorage.getItem("level") || 0;
-
-const course = [
-{l:"ا",t:"Алиф — звук А",q:"Это какая буква?",opts:["Алиф","Ба","Та"],c:0},
-{l:"ب",t:"Ба — звук Б\nبَ БА\nبِ БИ\nبُ БУ",q:"Как читается بِ ?",opts:["БА","БИ","БУ"],c:1},
-{l:"ت",t:"Та — звук Т",q:"Как читается تَ ?",opts:["ТА","БА","НА"],c:0},
-{l:"ث",t:"Са — язык между зубами",q:"Как читается ثَ ?",opts:["СА","ТА","КА"],c:0},
-{l:"ج",t:"Джим — ДЖ",q:"Как читается جَ ?",opts:["ЖА","ДЖА","ГА"],c:1},
-
-{l:"بَ",t:"Фатха = А",q:"Как читается بَ ?",opts:["БА","БИ","БУ"],c:0},
-{l:"بِ",t:"Касра = И",q:"Как читается بِ ?",opts:["БА","БИ","БУ"],c:1},
-
-{l:"مِنْ",t:"Нун сакина (4 правила)",q:"Сколько правил?",opts:["2","3","4"],c:2},
-{l:"قَالَ",t:"Мадд (удлинение)",q:"Сколько харакат?",opts:["2","4","6"],c:0}
-];
-
-function start(){
-show("lesson");
-load();
-}
-
-function load(){
-let x = course[level];
-document.getElementById("letter").innerText = x.l;
-document.getElementById("text").innerText = x.t;
-
-let p = (level/course.length)*100;
-document.getElementById("bar").style.width = p+"%";
-}
-
-function quiz(){
-show("quiz");
-let x = course[level];
-document.getElementById("q").innerText = x.q;
-x.opts.forEach((o,i)=>document.getElementById("a"+i).innerText=o);
-}
-
-function answer(i){
-show("result");
-document.getElementById("res").innerText =
-i==course[level].c ? "✅ Правильно" : "❌ Ошибка";
-}
-
-function next(){
-level++;
-localStorage.setItem("level", level);
-
-if(level>=course.length){
-alert("🎉 Курс завершён");
-localStorage.setItem("level",0);
-location.reload();
-return;
-}
-
-show("lesson");
-load();
-}
-
-function openVoice(){
-show("voice");
-}
-
-let rec, chunks=[];
-
-async function startRec(){
-const s = await navigator.mediaDevices.getUserMedia({audio:true});
-rec = new MediaRecorder(s);
-chunks=[];
-
-rec.ondataavailable=e=>chunks.push(e.data);
-rec.start();
-
-document.getElementById("voiceStatus").innerText="Запись...";
-}
-
-function stopRec(){
-rec.stop();
-rec.onstop=()=>{
-document.getElementById("voiceStatus").innerText=
-"Записано. Здесь подключается AI анализ.";
-};
-}
+let state = null;
 
 function show(id){
-["home","lesson","quiz","result","voice"].forEach(x=>{
-document.getElementById(x).classList.add("hidden");
-});
-document.getElementById(id).classList.remove("hidden");
+  ["home","lesson","quiz","result"].forEach(s=>document.getElementById(s).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
 
-</script>
+async function load(){
+  const r = await fetch(`/api/state?uid=${uid}`);
+  state = await r.json();
+}
 
+function start(){
+  load().then(()=>{
+    if(!state.item){ alert("Курс закончен"); return; }
+    document.getElementById("l_title").innerText = state.item.title || "Урок";
+    document.getElementById("l_text").innerText = state.item.content || "";
+    const p = (state.user.step / 5) * 100;
+    document.getElementById("bar").style.width = p + "%";
+    show("lesson");
+  });
+}
+
+function toQuiz(){
+  const it = state.item;
+  if(it.type!=="quiz"){ next(); return; }
+  document.getElementById("q_text").innerText = it.q;
+  it.opts.forEach((o,i)=>document.getElementById("a"+i).innerText=o);
+  show("quiz");
+}
+
+async function answer(i){
+  const r = await fetch("/api/answer",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({uid:uid, i:i})
+  });
+  const d = await r.json();
+  document.getElementById("res").innerText = d.correct ? "✅ Правильно" : "❌ Ошибка";
+  show("result");
+}
+
+async function next(){
+  await fetch("/api/next",{method:"POST",headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({uid:uid})});
+  start();
+}
+
+async function askAI(){
+  const q = prompt("Что объяснить?");
+  if(!q) return;
+  const r = await fetch("/api/ai_explain",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({text:q})
+  });
+  const d = await r.json();
+  alert(d.answer);
+}
+</script>
 </body>
 </html>
