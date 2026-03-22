@@ -1,10 +1,14 @@
+
 import os
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    ReplyKeyboardRemove
+)
 
 # ===== CONFIG =====
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
 bot = telebot.TeleBot(BOT_TOKEN)
 
 users = {}
@@ -16,7 +20,7 @@ def get_user(user_id):
             "level": "Новичок",
             "xp": 0,
             "streak": 0,
-            "current": "Алфавит → Буква ا",
+            "current": "🔤 Алфавит → Буква ا",
             "premium": False
         }
     return users[user_id]
@@ -26,24 +30,31 @@ def main_menu(chat_id, user_id):
     user = get_user(user_id)
 
     text = f"""
-📖 Tajweed App
+╔══════════════════╗
+     📖 TAJWEED PRO
+╚══════════════════╝
 
 خيركم من تعلم القرآن وعلمه
 
-"Лучший из вас — тот, кто изучает Коран и обучает ему"
+«Лучший из вас — тот,
+кто изучает Коран и обучает ему»
 
-✨ Начни путь к правильному чтению Корана
+━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━
+✨ Начни путь к правильному чтению
 
 👤 Уровень: {user['level']}
 ⭐ XP: {user['xp']}
-🔥 Дней подряд: {user['streak']}
+🔥 Серия: {user['streak']} дней
 
-━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━
 
-📍 Сейчас:
+📍 Текущий урок:
 {user['current']}
+
+━━━━━━━━━━━━━━━━━━━
+
+🚀 Выбери действие:
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
@@ -66,26 +77,30 @@ def main_menu(chat_id, user_id):
         InlineKeyboardButton("🤖 AI Учитель", callback_data="ai")
     )
 
-    bot.send_photo(
-        chat_id,
-        photo="https://i.imgur.com/8Km9tLL.jpg",
-        caption=text,
-        reply_markup=markup
-    )
+    bot.send_message(chat_id, text, reply_markup=markup)
 
 # ===== МЕНЮ ОБУЧЕНИЯ =====
 def learn_menu(chat_id, user_id):
     text = """
-📚 Обучение
+╔══════════════════╗
+     📚 ОБУЧЕНИЕ
+╚══════════════════╝
 
 Выбери модуль:
+
+🔤 Алфавит — буквы и звуки  
+📖 Основы чтения — слова  
+📚 Таджвид — правила  
+📖 Коран — практика  
+
+━━━━━━━━━━━━━━━━━━━
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
 
     markup.add(
         InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"),
-        InlineKeyboardButton("📖 Основы чтения", callback_data="reading")
+        InlineKeyboardButton("📖 Основы", callback_data="reading")
     )
 
     markup.add(
@@ -101,16 +116,17 @@ def learn_menu(chat_id, user_id):
         InlineKeyboardButton("⬅️ Назад", callback_data="back_main")
     )
 
-    bot.send_photo(
-        chat_id,
-        photo="https://i.imgur.com/8Km9tLL.jpg",
-        caption=text,
-        reply_markup=markup
-    )
+    bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== START =====
+# ===== START (УДАЛЯЕМ СТАРОЕ МЕНЮ) =====
 @bot.message_handler(commands=['start'])
 def start(message):
+    bot.send_message(
+        message.chat.id,
+        "♻️ Обновляем интерфейс...",
+        reply_markup=ReplyKeyboardRemove()
+    )
+
     main_menu(message.chat.id, message.from_user.id)
 
 # ===== CALLBACK =====
@@ -129,19 +145,19 @@ def callback(call):
         learn_menu(chat_id, user_id)
 
     elif data == "practice":
-        bot.send_message(chat_id, "🧠 Практика скоро будет")
+        bot.send_message(chat_id, "🧠 Практика скоро появится")
 
     elif data == "memorize":
-        bot.send_message(chat_id, "🎯 Заучивание скоро будет")
+        bot.send_message(chat_id, "🎯 Заучивание скоро появится")
 
     elif data == "progress":
-        bot.send_message(chat_id, "📊 Прогресс скоро будет")
+        bot.send_message(chat_id, "📊 Прогресс скоро появится")
 
     elif data == "ai":
-        bot.send_message(chat_id, "🤖 Напиши вопрос")
+        bot.send_message(chat_id, "🤖 Напиши свой вопрос")
 
     elif data == "alphabet":
-        bot.send_message(chat_id, "🔤 Алфавит скоро начнем")
+        bot.send_message(chat_id, "🔤 Алфавит скоро начнём")
 
     elif data == "reading":
         bot.send_message(chat_id, "📖 Основы чтения скоро")
@@ -157,9 +173,9 @@ def callback(call):
             bot.send_message(chat_id, """
 🎤 Проверка чтения (AI)
 
-Этот раздел будет платным
+Этот раздел будет платным.
 
-Скоро откроется
+Скоро откроется.
 """)
         else:
             bot.send_message(chat_id, "🎤 Начни читать...")
