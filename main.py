@@ -1,25 +1,25 @@
+import os
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import os
 
+# ===== CONFIG =====
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# ===== БАЗА ПОЛЬЗОВАТЕЛЕЙ =====
 users = {}
 
+# ===== USER =====
 def get_user(user_id):
     if user_id not in users:
         users[user_id] = {
-            "xp": 0,
             "level": "Новичок",
-            "current": "Алфавит → Буква ب",
+            "xp": 0,
             "streak": 0,
+            "current": "Алфавит → Буква ا",
             "premium": False
         }
     return users[user_id]
-
 
 # ===== ГЛАВНОЕ МЕНЮ =====
 def main_menu(chat_id, user_id):
@@ -30,16 +30,18 @@ def main_menu(chat_id, user_id):
 
 خيركم من تعلم القرآن وعلمه
 
-“Лучший из вас — тот, кто изучает Коран и обучает ему”
+"Лучший из вас — тот, кто изучает Коран и обучает ему"
 
 ✨ Начни путь к правильному чтению Корана
 
-━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━
+
 👤 Уровень: {user['level']}
 ⭐ XP: {user['xp']}
 🔥 Дней подряд: {user['streak']}
 
-━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━
+
 📍 Сейчас:
 {user['current']}
 """
@@ -51,7 +53,7 @@ def main_menu(chat_id, user_id):
     )
 
     markup.add(
-        InlineKeyboardButton("📖 Обучение", callback_data="learn"),
+        InlineKeyboardButton("📚 Обучение", callback_data="learn"),
         InlineKeyboardButton("🧠 Практика", callback_data="practice")
     )
 
@@ -66,11 +68,10 @@ def main_menu(chat_id, user_id):
 
     bot.send_photo(
         chat_id,
-        photo="https://images.unsplash.com/photo-1542816417-0983677f9b6b",
+        photo="https://i.imgur.com/8Km9tLL.jpg",
         caption=text,
         reply_markup=markup
     )
-
 
 # ===== МЕНЮ ОБУЧЕНИЯ =====
 def learn_menu(chat_id, user_id):
@@ -84,7 +85,7 @@ def learn_menu(chat_id, user_id):
 
     markup.add(
         InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"),
-        InlineKeyboardButton("📘 Основы чтения", callback_data="reading")
+        InlineKeyboardButton("📖 Основы чтения", callback_data="reading")
     )
 
     markup.add(
@@ -102,17 +103,15 @@ def learn_menu(chat_id, user_id):
 
     bot.send_photo(
         chat_id,
-        photo="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f",
+        photo="https://i.imgur.com/8Km9tLL.jpg",
         caption=text,
         reply_markup=markup
     )
-
 
 # ===== START =====
 @bot.message_handler(commands=['start'])
 def start(message):
     main_menu(message.chat.id, message.from_user.id)
-
 
 # ===== CALLBACK =====
 @bot.callback_query_handler(func=lambda call: True)
@@ -120,6 +119,7 @@ def callback(call):
     user_id = call.from_user.id
     chat_id = call.message.chat.id
     data = call.data
+
     user = get_user(user_id)
 
     if data == "continue":
@@ -128,57 +128,45 @@ def callback(call):
     elif data == "learn":
         learn_menu(chat_id, user_id)
 
-    elif data == "back_main":
-        main_menu(chat_id, user_id)
-
     elif data == "practice":
-        bot.send_message(chat_id, "🧠 Практика (в разработке)")
+        bot.send_message(chat_id, "🧠 Практика скоро будет")
 
     elif data == "memorize":
-        bot.send_message(chat_id, "🎯 Заучивание (в разработке)")
+        bot.send_message(chat_id, "🎯 Заучивание скоро будет")
 
     elif data == "progress":
-        bot.send_message(chat_id, "📊 Прогресс (в разработке)")
+        bot.send_message(chat_id, "📊 Прогресс скоро будет")
 
     elif data == "ai":
         bot.send_message(chat_id, "🤖 Напиши вопрос")
 
     elif data == "alphabet":
-        bot.send_message(chat_id, "🔤 Алфавит (скоро начнем обучение)")
+        bot.send_message(chat_id, "🔤 Алфавит скоро начнем")
 
     elif data == "reading":
-        bot.send_message(chat_id, "📘 Основы чтения (скоро)")
+        bot.send_message(chat_id, "📖 Основы чтения скоро")
 
     elif data == "tajweed":
-        bot.send_message(chat_id, "📚 Таджвид (скоро)")
+        bot.send_message(chat_id, "📚 Таджвид скоро")
 
     elif data == "quran":
-        bot.send_message(chat_id, "📖 Коран (скоро)")
+        bot.send_message(chat_id, "📖 Коран скоро")
 
     elif data == "ai_check":
         if not user["premium"]:
             bot.send_message(chat_id, """
 🎤 Проверка чтения (AI)
 
-Этот раздел будет платным.
+Этот раздел будет платным
 
-💡 Ты сможешь:
-• читать голосом  
-• получать исправления  
-• учиться правильно  
-
-Скоро доступ откроется
+Скоро откроется
 """)
         else:
             bot.send_message(chat_id, "🎤 Начни читать...")
 
+    elif data == "back_main":
+        main_menu(chat_id, user_id)
 
 # ===== ЗАПУСК =====
-def handle_all(message):
-    if message.text == "/start":
-        main_menu(message.chat.id, message.from_user.id)
-    else:
-        bot.send_message(message.chat.id, "Нажми /start")
 print("🚀 Бот запущен")
 bot.polling(none_stop=True)
-@bot.message_handler(func=lambda message: True)
