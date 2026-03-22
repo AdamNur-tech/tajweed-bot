@@ -15,7 +15,8 @@ def get_user(user_id):
             "xp": 0,
             "level": "Новичок",
             "current": "Алфавит → Буква ب",
-            "streak": 0
+            "streak": 0,
+            "premium": False
         }
     return users[user_id]
 
@@ -71,24 +72,61 @@ def main_menu(chat_id, user_id):
     bot.send_message(chat_id, text, reply_markup=markup)
 
 
+# ===== МЕНЮ ОБУЧЕНИЯ =====
+def learn_menu(chat_id, user_id):
+    text = """
+╔══════════════════════╗
+        📚 Обучение
+╚══════════════════════╝
+
+Выбери модуль:
+"""
+
+    markup = InlineKeyboardMarkup(row_width=2)
+
+    markup.add(
+        InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"),
+        InlineKeyboardButton("📘 Основы чтения", callback_data="reading")
+    )
+
+    markup.add(
+        InlineKeyboardButton("📚 Таджвид", callback_data="tajweed"),
+        InlineKeyboardButton("📖 Коран", callback_data="quran")
+    )
+
+    markup.add(
+        InlineKeyboardButton("🎤 Проверка чтения (AI)", callback_data="ai_check")
+    )
+
+    markup.add(
+        InlineKeyboardButton("⬅️ Назад", callback_data="back_main")
+    )
+
+    bot.send_message(chat_id, text, reply_markup=markup)
+
+
 # ===== START =====
 @bot.message_handler(commands=['start'])
 def start(message):
     main_menu(message.chat.id, message.from_user.id)
 
 
-# ===== ОБРАБОТКА КНОПОК =====
+# ===== CALLBACK =====
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     user_id = call.from_user.id
     chat_id = call.message.chat.id
     data = call.data
+    user = get_user(user_id)
 
     if data == "continue":
         bot.send_message(chat_id, "🚀 Продолжаем обучение...")
 
     elif data == "learn":
-        bot.send_message(chat_id, "📖 Раздел обучения (скоро добавим модули)")
+        learn_menu(chat_id, user_id)
+
+    elif data == "back_main":
+        main_menu(chat_id, user_id)
 
     elif data == "practice":
         bot.send_message(chat_id, "🧠 Практика (в разработке)")
@@ -101,6 +139,35 @@ def callback(call):
 
     elif data == "ai":
         bot.send_message(chat_id, "🤖 Напиши вопрос")
+
+    elif data == "alphabet":
+        bot.send_message(chat_id, "🔤 Модуль алфавита (следующий шаг)")
+
+    elif data == "reading":
+        bot.send_message(chat_id, "📘 Основы чтения (скоро)")
+
+    elif data == "tajweed":
+        bot.send_message(chat_id, "📚 Таджвид (скоро)")
+
+    elif data == "quran":
+        bot.send_message(chat_id, "📖 Коран (скоро)")
+
+    elif data == "ai_check":
+        if not user["premium"]:
+            bot.send_message(chat_id, """
+🎤 Проверка чтения (AI)
+
+Этот раздел доступен по подписке.
+
+💡 Здесь ты сможешь:
+• читать Коран голосом  
+• получать исправления  
+• улучшать произношение  
+
+💰 Доступ будет платным
+""")
+        else:
+            bot.send_message(chat_id, "🎤 Начни читать...")
 
 
 # ===== ЗАПУСК =====
