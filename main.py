@@ -8,36 +8,36 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 users = {}
 
-# ===== ПОЛНЫЙ АЛФАВИТ =====
+# ===== АЛФАВИТ (ПРАВИЛЬНЫЙ) =====
 letters = [
-    {"letter": "ا", "name": "Алиф", "correct": "А"},
-    {"letter": "ب", "name": "Ба", "correct": "Б"},
-    {"letter": "ت", "name": "Та", "correct": "Т"},
-    {"letter": "ث", "name": "Са", "correct": "С"},
-    {"letter": "ج", "name": "Джим", "correct": "Д"},
-    {"letter": "ح", "name": "Ха", "correct": "Х"},
-    {"letter": "خ", "name": "Ха (глубокое)", "correct": "Х"},
-    {"letter": "د", "name": "Даль", "correct": "Д"},
-    {"letter": "ذ", "name": "Заль", "correct": "З"},
-    {"letter": "ر", "name": "Ра", "correct": "Р"},
-    {"letter": "ز", "name": "Зай", "correct": "З"},
-    {"letter": "س", "name": "Син", "correct": "С"},
-    {"letter": "ش", "name": "Шин", "correct": "Ш"},
-    {"letter": "ص", "name": "Сад", "correct": "С"},
-    {"letter": "ض", "name": "Дад", "correct": "Д"},
-    {"letter": "ط", "name": "Та (твердая)", "correct": "Т"},
-    {"letter": "ظ", "name": "За (твердая)", "correct": "З"},
-    {"letter": "ع", "name": "Айн", "correct": "А"},
-    {"letter": "غ", "name": "Гайн", "correct": "Г"},
-    {"letter": "ف", "name": "Фа", "correct": "Ф"},
-    {"letter": "ق", "name": "Каф", "correct": "К"},
-    {"letter": "ك", "name": "Кяф", "correct": "К"},
-    {"letter": "ل", "name": "Лям", "correct": "Л"},
-    {"letter": "م", "name": "Мим", "correct": "М"},
-    {"letter": "ن", "name": "Нун", "correct": "Н"},
-    {"letter": "ه", "name": "Ха", "correct": "Х"},
-    {"letter": "و", "name": "Вау", "correct": "У"},
-    {"letter": "ي", "name": "Я", "correct": "И"},
+    {"letter": "ا", "name": "Алиф", "sound": "a", "makhraj": "из горла (без контакта)"},
+    {"letter": "ب", "name": "Ба", "sound": "ba", "makhraj": "губы"},
+    {"letter": "ت", "name": "Та", "sound": "ta", "makhraj": "кончик языка + зубы"},
+    {"letter": "ث", "name": "Са", "sound": "tha", "makhraj": "язык между зубами"},
+    {"letter": "ج", "name": "Джим", "sound": "ja", "makhraj": "середина языка"},
+    {"letter": "ح", "name": "Ха", "sound": "ḥa", "makhraj": "середина горла"},
+    {"letter": "خ", "name": "Ха (глубокое)", "sound": "kha", "makhraj": "верх горла"},
+    {"letter": "د", "name": "Даль", "sound": "da", "makhraj": "кончик языка"},
+    {"letter": "ذ", "name": "Заль", "sound": "dha", "makhraj": "между зубами"},
+    {"letter": "ر", "name": "Ра", "sound": "ra", "makhraj": "кончик языка"},
+    {"letter": "ز", "name": "Зай", "sound": "za", "makhraj": "зубы"},
+    {"letter": "س", "name": "Син", "sound": "sa", "makhraj": "зубы"},
+    {"letter": "ش", "name": "Шин", "sound": "sha", "makhraj": "середина языка"},
+    {"letter": "ص", "name": "Сад", "sound": "ṣa", "makhraj": "зубы (твердо)"},
+    {"letter": "ض", "name": "Дад", "sound": "ḍa", "makhraj": "бок языка"},
+    {"letter": "ط", "name": "Та (твердая)", "sound": "ṭa", "makhraj": "кончик языка (твердо)"},
+    {"letter": "ظ", "name": "За (твердая)", "sound": "ẓa", "makhraj": "между зубами (твердо)"},
+    {"letter": "ع", "name": "Айн", "sound": "ʿa", "makhraj": "глубина горла"},
+    {"letter": "غ", "name": "Гайн", "sound": "gha", "makhraj": "верх горла"},
+    {"letter": "ف", "name": "Фа", "sound": "fa", "makhraj": "губы + зубы"},
+    {"letter": "ق", "name": "Каф (глубокая)", "sound": "qa", "makhraj": "глубина языка"},
+    {"letter": "ك", "name": "Каф", "sound": "ka", "makhraj": "язык"},
+    {"letter": "ل", "name": "Лям", "sound": "la", "makhraj": "язык"},
+    {"letter": "م", "name": "Мим", "sound": "ma", "makhraj": "губы"},
+    {"letter": "ن", "name": "Нун", "sound": "na", "makhraj": "язык + нос"},
+    {"letter": "ه", "name": "Ха", "sound": "ha", "makhraj": "горло"},
+    {"letter": "و", "name": "Вау", "sound": "wa", "makhraj": "губы"},
+    {"letter": "ي", "name": "Я", "sound": "ya", "makhraj": "середина языка"},
 ]
 
 # ===== USER =====
@@ -53,7 +53,7 @@ def get_user(user_id):
 
 # ===== AUDIO =====
 def generate_audio(text):
-    tts = gTTS(text=text, lang="ar")
+    tts = gTTS(text=text, lang="ar", slow=True)
     tts.save("voice.mp3")
     return "voice.mp3"
 
@@ -87,16 +87,34 @@ def lesson(chat_id, user_id, message_id=None):
     user = get_user(user_id)
     letter = letters[user["level"]]
     step = user["step"]
-
     bar = progress_bar(step)
 
     if step == 0:
-        text = f"{bar}\n\n🔤 {letter['letter']}\n\n{letter['name']}"
+        text = f"""
+{bar}
+
+🔤 БУКВА: {letter['letter']}
+
+Название: {letter['name']}
+
+📌 Чтение: {letter['sound']}
+"""
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("Далее ➡️", callback_data="next"))
 
     elif step == 1:
-        text = f"{bar}\n\n🗣 Произношение\n\nЗвук: {letter['correct']}"
+        text = f"""
+{bar}
+
+🗣 ПРОИЗНОШЕНИЕ
+
+Звук: {letter['sound']}
+
+📍 Махрадж:
+{letter['makhraj']}
+
+❌ не искажай звук
+"""
         markup = InlineKeyboardMarkup()
         markup.add(
             InlineKeyboardButton("🔊 Слушать", callback_data="sound"),
@@ -104,24 +122,47 @@ def lesson(chat_id, user_id, message_id=None):
         )
 
     elif step == 2:
-        text = f"{bar}\n\n📖 Пример\n\n{letter['letter']}َ {letter['letter']}ُ {letter['letter']}ِ"
+        text = f"""
+{bar}
+
+📖 ПРИМЕРЫ
+
+{letter['letter']}َ  
+{letter['letter']}ُ  
+{letter['letter']}ِ  
+
+👉 тренируй короткие звуки
+"""
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("Далее ➡️", callback_data="next"))
 
     elif step == 3:
-        text = f"{bar}\n\n🎯 Тест\n\nКак читается:\n\n{letter['letter']}"
+        correct = letter["sound"]
+
+        text = f"""
+{bar}
+
+🎯 ТЕСТ
+
+Как читается:
+
+{letter['letter']}
+"""
         markup = InlineKeyboardMarkup(row_width=2)
         markup.add(
-            InlineKeyboardButton("А", callback_data="A"),
-            InlineKeyboardButton("Б", callback_data="B"),
-            InlineKeyboardButton("Т", callback_data="T"),
-            InlineKeyboardButton("С", callback_data="S"),
-            InlineKeyboardButton("М", callback_data="M"),
+            InlineKeyboardButton(correct, callback_data="correct"),
+            InlineKeyboardButton("ba", callback_data="wrong"),
+            InlineKeyboardButton("ta", callback_data="wrong"),
+            InlineKeyboardButton("sa", callback_data="wrong"),
         )
 
-    if message_id:
-        bot.edit_message_text(text, chat_id, message_id, reply_markup=markup)
-    else:
+    try:
+        if message_id:
+            bot.edit_message_text(text, chat_id, message_id, reply_markup=markup)
+        else:
+            msg = bot.send_message(chat_id, text, reply_markup=markup)
+            return msg.message_id
+    except:
         msg = bot.send_message(chat_id, text, reply_markup=markup)
         return msg.message_id
 
@@ -155,23 +196,21 @@ def callback(call):
         audio = open(file, "rb")
         bot.send_voice(chat_id, audio)
 
-    elif data in ["A","B","T","S","M"]:
-        correct = letters[user["level"]]["correct"]
+    elif data == "correct":
+        user["xp"] += 10
+        bot.answer_callback_query(call.id, "✅ Правильно!")
 
-        if data == correct:
-            user["xp"] += 10
-            bot.answer_callback_query(call.id, "✅ Правильно!")
+        user["level"] += 1
+        user["step"] = 0
 
-            user["level"] += 1
-            user["step"] = 0
-
-            if user["level"] >= len(letters):
-                bot.send_message(chat_id, "🎉 Ты прошёл весь алфавит!")
-            else:
-                msg_id = lesson(chat_id, user_id)
-                user["lesson_msg"] = msg_id
+        if user["level"] >= len(letters):
+            bot.send_message(chat_id, "🎉 Ты прошёл алфавит!")
         else:
-            bot.answer_callback_query(call.id, "❌ Ошибка")
+            msg_id = lesson(chat_id, user_id)
+            user["lesson_msg"] = msg_id
+
+    elif data == "wrong":
+        bot.answer_callback_query(call.id, "❌ Ошибка")
 
 # ===== RUN =====
 print("🚀 BOT STARTED")
