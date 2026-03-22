@@ -1,133 +1,161 @@
-import os
 import telebot
-from flask import Flask, request
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+import os
 from openai import OpenAI
+import random
 
-# --- CONFIG ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-BASE_URL = os.getenv("BASE_URL")
 
 bot = telebot.TeleBot(BOT_TOKEN)
-app = Flask(__name__)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+# ===== USERS DB =====
 users = {}
 
-# --- USER ---
 def get_user(user_id):
     if user_id not in users:
         users[user_id] = {
-            "level": 1,
-            "errors": [],
-            "lesson": 0
+            "xp": 0,
+            "level": "Beginner",
+            "mode": "menu",
+            "mistakes": [],
+            "current_module": "nun"
         }
     return users[user_id]
 
-# --- УРОКИ ---
-LESSONS = [
-    {"title": "Алиф", "text": "ا", "desc": "Алиф читается как 'А'"},
-    {"title": "Ба", "text": "ب", "desc": "Ба читается как 'Б'"},
-    {"title": "Та", "text": "ت", "desc": "Та читается как 'Т'"},
-    {"title": "Са", "text": "ث", "desc": "Са — межзубный звук"},
-]
+# ===== MODULES =====
+modules = {
+    "nun": {
+        "name": "Нун и правила",
+        "questions": [
+            {
+                "text": "مِن بَعْدِ",
+                "correct": "Икляб",
+                "options": ["Ихфа", "Икляб", "Идгам"]
+            },
+            {
+                "text": "مِنْ شَرِّ",
+                "correct": "Ихфа",
+                "options": ["Ихфа", "Изхар", "Идгам"]
+            }
+        ]
+    }
+}
 
-# --- СТАРТ ---
-@bot.message_handler(commands=["start"])
-def start(m):
-    bot.send_message(m.chat.id,
-        "📚 AI Медресе таджвида\n\n"
-        "Команды:\n"
-        "📖 урок\n"
-        "🧠 тест\n"
-        "🎤 практика\n"
-        "📊 прогресс"
+# ===== LEVEL SYSTEM =====
+def update_level(user):
+    if user["xp"] > 100:
+        user["level"] = "Intermediate"
+    if user["xp"] > 300:
+        user["level"] = "Advanced"
+
+# ===== MENU =====
+def main_menu(chat_id):
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("📚 Учиться", callback_data="learn"),
+        InlineKeyboardButton("🎯 Практика", callback_data="practice")
     )
-
-# --- УРОК ---
-@bot.message_handler(func=lambda m: m.text.lower() == "урок")
-def lesson(m):
-    user = get_user(m.from_user.id)
-    l = LESSONS[user["lesson"] % len(LESSONS)]
-
-    bot.send_message(m.chat.id,
-        f"📖 Урок {user['lesson']+1}\n\n"
-        f"{l['title']}: {l['text']}\n\n"
-        f"{l['desc']}"
+    markup.add(
+        InlineKeyboardButton("🤖 AI Учитель", callback_data="ai")
     )
+    bot.send_message(chat_id, "Выбери:", reply_markup=markup)
 
-    user["lesson"] += 1
+# ===== QUESTION =====
+def send_question(chat_id, user):
+    module = modules[user["current_module"]]
+    q = random.choice(module["questions"])
 
-# --- ТЕСТ ---
-@bot.message_handler(func=lambda m: m.text.lower() == "тест")
-def test(m):
-    user = get_user(m.from_user.id)
-    l = LESSONS[(user["lesson"]-1) % len(LESSONS)]
+    markup = InlineKeyboardMarkup()
 
-    bot.send_message(m.chat.id,
-        f"❓ Как читается:\n\n{l['text']}"
+    for opt in q["options"]:
+        markup.add(
+            InlineKeyboardButton(opt, callback_data=f"ans|{opt}|{q['correct']}")
+        )
+
+    bot.send_message(chat_id, f"{q['text']}\n\nЧто это?", reply_markup=markup)
+
+# ===== AI =====
+def ai_teacher(text):
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[
+            {"role": "system", "content": """
+Ты эксперт по таджвиду.
+Учишь как преподаватель:
+- через ощущения
+- исправляешь ошибки
+- даёшь практику
+"""},
+
+            {"role": "user", "content": text}
+        ]
     )
+    return response.choices[0].message.content
 
-    user["test"] = l["title"].lower()
+# ===== VOICE =====
+def speech_to_text(file):
+    return client.audio.transcriptions.create(
+        model="gpt-4o-mini-transcribe",
+        file=open(file, "rb")
+    ).text
 
-@bot.message_handler(func=lambda m: True)
-def answer(m):
-    user = get_user(m.from_user.id)
+# ===== CALLBACK =====
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    user = get_user(call.from_user.id)
 
-    if "test" in user:
-        if m.text.lower() == user["test"]:
-            bot.send_message(m.chat.id, "✅ Правильно!")
-            user["level"] += 1
+    if call.data == "learn":
+        send_question(call.message.chat.id, user)
+
+    elif call.data.startswith("ans"):
+        _, user_ans, correct = call.data.split("|")
+
+        if user_ans == correct:
+            user["xp"] += 10
+            update_level(user)
+            bot.send_message(call.message.chat.id, f"✅ XP: {user['xp']} | Уровень: {user['level']}")
         else:
-            bot.send_message(m.chat.id, "❌ Ошибка")
-            user["errors"].append(m.text)
+            user["mistakes"].append(correct)
+            bot.send_message(call.message.chat.id, f"❌ Ошибка. Правильно: {correct}")
 
-        del user["test"]
+        send_question(call.message.chat.id, user)
 
-# --- ПРОГРЕСС ---
-@bot.message_handler(func=lambda m: m.text.lower() == "прогресс")
-def progress(m):
-    user = get_user(m.from_user.id)
+    elif call.data == "ai":
+        user["mode"] = "ai"
+        bot.send_message(call.message.chat.id, "Задай вопрос или отправь голос")
 
-    bot.send_message(m.chat.id,
-        f"📊 Уровень: {user['level']}\n"
-        f"Ошибки: {len(user['errors'])}"
-    )
+# ===== TEXT =====
+@bot.message_handler(content_types=['text'])
+def handle_text(message):
+    user = get_user(message.from_user.id)
 
-# --- ГОЛОС ---
-@bot.message_handler(content_types=["voice"])
-def voice(m):
-    bot.send_message(m.chat.id, "🎤 Анализирую...")
+    if user["mode"] == "ai":
+        answer = ai_teacher(message.text)
+        bot.send_message(message.chat.id, answer)
 
-    res = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{
-            "role": "user",
-            "content": "Оцени чтение Корана и дай таджвид ошибки"
-        }]
-    )
+# ===== VOICE =====
+@bot.message_handler(content_types=['voice'])
+def handle_voice(message):
+    user = get_user(message.from_user.id)
 
-    bot.send_message(m.chat.id,
-        f"🧠 Разбор:\n{res.choices[0].message.content}"
-    )
+    file_info = bot.get_file(message.voice.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
 
-# --- WEBHOOK ---
-@app.route(f"/{BOT_TOKEN}", methods=["POST"])
-def webhook():
-    json_str = request.get_data().decode("UTF-8")
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return "ok"
+    with open("voice.ogg", "wb") as f:
+        f.write(downloaded_file)
 
-# --- SET WEBHOOK ---
-@app.route("/set_webhook")
-def set_webhook():
-    bot.remove_webhook()
-    bot.set_webhook(url=f"{BASE_URL}/{BOT_TOKEN}")
-    return "Webhook set"
+    text = speech_to_text("voice.ogg")
 
-# --- RUN ---
-PORT = int(os.environ.get("PORT", 8080))
+    bot.send_message(message.chat.id, f"Ты сказал:\n{text}")
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=PORT)
+    answer = ai_teacher(f"Проверь таджвид: {text}")
+    bot.send_message(message.chat.id, answer)
+
+# ===== START =====
+@bot.message_handler(commands=['start'])
+def start(message):
+    main_menu(message.chat.id)
+
+bot.polling()
