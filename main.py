@@ -1,6 +1,6 @@
 import os
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import ReplyKeyboardMarkup
 from openai import OpenAI
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -13,30 +13,40 @@ users = {}
 
 FREE_LIMIT = 3
 
-# --- УРОКИ ---
+# --- УРОКИ ПО УРОВНЯМ ---
 LESSONS = {
-    1: "📚 Нун сакина:\n\nИзхар, Идгам, Ихфа, Икляб",
-    2: "📚 Мадд:\n\nУдлинение звука",
-    3: "📚 Калькаля:\n\nОтражение звука",
+1: "📚 Алиф Ба Та:\nا ب ت\nПовтори вслух",
+2: "📚 Все буквы:\nا ب ت ث ج ح خ د ...",
+3: "📚 Формы букв:\nب بـ ـبـ ـب",
+4: "📚 Фатха:\nبَ = БА",
+5: "📚 Касра:\nبِ = БИ",
+6: "📚 Дамма:\nبُ = БУ",
+7: "📚 Сукун:\nبْ",
+8: "📚 Танвин:\nً ٍ ٌ",
+9: "📚 Чтение:\nبَتَ = БАТА",
+10: "📚 Нун сакина:\n4 правила",
+11: "📚 Мим сакина:\n3 правила",
+12: "📚 Мадд:\n2 хараката",
+13: "📚 Калькаля:\nق ط ب ج د",
+14: "📚 Толстые буквы:\nص ض ط ظ",
+15: "📚 Ра и Лям",
+16: "📚 Вакф (остановка)",
+17: "📚 Ошибки таджвида"
 }
 
-# --- ВОПРОСЫ ---
+# --- ТЕСТЫ ---
 QUIZ = {
-    1: ("Сколько правил у нун сакина?", "4"),
-    2: ("Минимальный мадд?", "2"),
+1: ("Какая буква это: ا ?", "алиф"),
+4: ("Как читается بَ ?", "ба"),
+10: ("Сколько правил у нун сакина?", "4"),
+12: ("Сколько харакат у мадда?", "2"),
 }
 
 # --- МЕНЮ ---
 def menu():
-    m = InlineKeyboardMarkup()
-    m.add(
-        InlineKeyboardButton("📚 Урок", callback_data="lesson"),
-        InlineKeyboardButton("🧠 Тест", callback_data="quiz")
-    )
-    m.add(
-        InlineKeyboardButton("🎤 Проверка", callback_data="voice"),
-        InlineKeyboardButton("📊 Прогресс", callback_data="profile")
-    )
+    m = ReplyKeyboardMarkup(resize_keyboard=True)
+    m.add("📚 Урок", "🧠 Тест")
+    m.add("🎤 Практика", "📊 Прогресс")
     return m
 
 # --- СТАРТ ---
@@ -48,66 +58,52 @@ def start(m):
         users[uid] = {
             "level": 1,
             "xp": 0,
-            "used": 0,
-            "paid": False
+            "step": None,
+            "used": 0
         }
 
-    bot.send_message(
-        m.chat.id,
+    bot.send_message(m.chat.id,
         "🎓 Медресе таджвида\n\n"
-        "Учись, сдавай экзамены и повышай уровень 📚",
-        reply_markup=menu()
-    )
+        "Ты начинаешь с нуля и дойдёшь до уровня кари 📖\n\n"
+        "Выбери:",
+        reply_markup=menu())
 
-# --- CALLBACK ---
-@bot.callback_query_handler(func=lambda c: True)
-def cb(c):
-    uid = c.from_user.id
-    user = users[uid]
+# --- УРОК ---
+@bot.message_handler(func=lambda m: m.text == "📚 Урок")
+def lesson(m):
+    user = users[m.chat.id]
+    lvl = user["level"]
 
-    if c.data == "lesson":
-        lvl = user["level"]
-        bot.edit_message_text(
-            LESSONS.get(lvl, "📚 Продвинутый уровень"),
-            c.message.chat.id,
-            c.message.message_id,
-            reply_markup=menu()
-        )
+    bot.send_message(m.chat.id, LESSONS.get(lvl, "🎓 Ты прошёл курс!"))
 
-    elif c.data == "quiz":
-        q, _ = QUIZ.get(user["level"], ("Нет вопросов", ""))
-        bot.edit_message_text(
-            f"❓ {q}",
-            c.message.chat.id,
-            c.message.message_id
-        )
-        users[uid]["step"] = "quiz"
+# --- ТЕСТ ---
+@bot.message_handler(func=lambda m: m.text == "🧠 Тест")
+def quiz(m):
+    user = users[m.chat.id]
+    lvl = user["level"]
 
-    elif c.data == "profile":
-        bot.edit_message_text(
-            f"📊 Уровень: {user['level']}\nXP: {user['xp']}",
-            c.message.chat.id,
-            c.message.message_id,
-            reply_markup=menu()
-        )
+    if lvl not in QUIZ:
+        bot.send_message(m.chat.id, "📚 Сначала изучи урок")
+        return
 
-    elif c.data == "voice":
-        bot.send_message(c.message.chat.id, "🎤 Отправь голос")
+    q, _ = QUIZ[lvl]
+    users[m.chat.id]["step"] = "quiz"
 
-# --- ОТВЕТ НА ТЕСТ ---
-@bot.message_handler(func=lambda m: users.get(m.from_user.id, {}).get("step") == "quiz")
-def quiz_answer(m):
-    uid = m.from_user.id
-    user = users[uid]
+    bot.send_message(m.chat.id, f"❓ {q}")
 
-    _, correct = QUIZ.get(user["level"], ("", ""))
+@bot.message_handler(func=lambda m: users.get(m.chat.id, {}).get("step") == "quiz")
+def answer(m):
+    user = users[m.chat.id]
+    lvl = user["level"]
 
-    if correct in m.text:
+    _, correct = QUIZ.get(lvl, ("", ""))
+
+    if correct in m.text.lower():
         user["xp"] += 10
         user["level"] += 1
         bot.send_message(m.chat.id, "✅ Верно! Уровень повышен 🔥")
     else:
-        bot.send_message(m.chat.id, f"❌ Ошибка. Ответ: {correct}")
+        bot.send_message(m.chat.id, f"❌ Неправильно. Ответ: {correct}")
 
     user["step"] = None
 
@@ -117,13 +113,13 @@ def voice(m):
     uid = m.from_user.id
     user = users[uid]
 
-    if not user["paid"] and user["used"] >= FREE_LIMIT:
+    if user["used"] >= FREE_LIMIT:
         bot.send_message(m.chat.id, "❌ Лимит. Напиши /buy")
         return
 
     user["used"] += 1
 
-    bot.send_message(m.chat.id, "🎧 Проверяю...")
+    bot.send_message(m.chat.id, "🎧 Проверяю чтение...")
 
     file = bot.get_file(m.voice.file_id)
     audio = bot.download_file(file.file_path)
@@ -142,8 +138,9 @@ def voice(m):
     res = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "Коротко найди ошибки таджвида"},
-            {"role": "user", "content": text}
+            {"role":"system","content":
+             "Ты учитель таджвида. Найди ошибки и дай совет"},
+            {"role":"user","content":text}
         ]
     )
 
@@ -151,12 +148,20 @@ def voice(m):
         f"📖 {text}\n\n🧠 {res.choices[0].message.content}"
     )
 
+# --- ПРОГРЕСС ---
+@bot.message_handler(func=lambda m: m.text == "📊 Прогресс")
+def progress(m):
+    user = users[m.chat.id]
+
+    bot.send_message(m.chat.id,
+        f"📊 Уровень: {user['level']}\nXP: {user['xp']}")
+
 # --- ПОКУПКА ---
 @bot.message_handler(commands=['buy'])
 def buy(m):
     bot.send_message(m.chat.id,
-        "💰 Доступ 5€\nНапиши @your_username")
+        "💰 Доступ без лимита — 5€\nНапиши @your_username")
 
 # --- ЗАПУСК ---
-print("МЕДРЕСЕ БОТ ЗАПУЩЕН 🚀")
+print("БОТ МЕДРЕСЕ ЗАПУЩЕН 🚀")
 bot.infinity_polling()
