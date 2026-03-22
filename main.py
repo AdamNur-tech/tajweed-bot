@@ -13,7 +13,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 users = {}
 
-# ===== АЛФАВИТ (ДОБАВЛЕНА ХАМЗА) =====
+# ===== АЛФАВИТ =====
 letters = [
     {"l":"ء","name":"Hamza","base":"ʾ","makhraj":"Гортань. Резкий звук — короткое прерывание воздуха."},
 
@@ -152,7 +152,10 @@ def alphabet_lesson(chat_id, user_id):
 
         markup = InlineKeyboardMarkup()
         markup.add(
-            InlineKeyboardButton("🔊 Слушать", callback_data="sound"),
+            InlineKeyboardButton("🔊 Буква", callback_data="sound"),
+            InlineKeyboardButton("🔊 Харакаты", callback_data="sound_harakat")
+        )
+        markup.add(
             InlineKeyboardButton("➡️ К тесту", callback_data="to_test")
         )
 
@@ -196,6 +199,11 @@ def callback(call):
     elif call.data == "sound":
         l = letters[user["letter_index"]]["l"]
         bot.send_voice(chat_id, open(generate_audio(l), "rb"))
+
+    elif call.data == "sound_harakat":
+        l = letters[user["letter_index"]]["l"]
+        text = f"{l}َ {l}ُ {l}ِ"
+        bot.send_voice(chat_id, open(generate_audio(text), "rb"))
 
     elif call.data == "correct":
         bot.send_message(chat_id, "✅ Правильно")
