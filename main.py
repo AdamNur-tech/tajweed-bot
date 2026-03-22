@@ -5,6 +5,7 @@ from telebot.types import (
     InlineKeyboardButton,
     ReplyKeyboardRemove
 )
+from gtts import gTTS
 
 # ===== CONFIG =====
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -20,9 +21,16 @@ def get_user(user_id):
             "xp": 0,
             "streak": 0,
             "current": "Алфавит → Буква ا (Алиф)",
-            "premium": False
+            "premium": False,
+            "step": 0
         }
     return users[user_id]
+
+# ===== AUDIO =====
+def generate_audio(text, filename="voice.mp3"):
+    tts = gTTS(text=text, lang="ar")
+    tts.save(filename)
+    return filename
 
 # ===== ГЛАВНОЕ МЕНЮ =====
 def main_menu(chat_id, user_id):
@@ -60,24 +68,16 @@ def main_menu(chat_id, user_id):
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
-
-    markup.add(
-        InlineKeyboardButton("▶️ Продолжить", callback_data="continue")
-    )
-
+    markup.add(InlineKeyboardButton("▶️ Продолжить", callback_data="continue"))
     markup.add(
         InlineKeyboardButton("📚 Обучение", callback_data="learn"),
         InlineKeyboardButton("🧠 Практика", callback_data="practice")
     )
-
     markup.add(
         InlineKeyboardButton("🎯 Заучивание", callback_data="memorize"),
         InlineKeyboardButton("📊 Прогресс", callback_data="progress")
     )
-
-    markup.add(
-        InlineKeyboardButton("🤖 AI Учитель", callback_data="ai")
-    )
+    markup.add(InlineKeyboardButton("🤖 AI Учитель", callback_data="ai"))
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
@@ -99,24 +99,18 @@ def learn_menu(chat_id, user_id):
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
-
     markup.add(
         InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"),
         InlineKeyboardButton("📖 Основы", callback_data="reading")
     )
-
     markup.add(
         InlineKeyboardButton("📚 Таджвид", callback_data="tajweed"),
         InlineKeyboardButton("📖 Коран", callback_data="quran")
     )
-
     markup.add(
         InlineKeyboardButton("🎤 Проверка чтения (AI)", callback_data="ai_check")
     )
-
-    markup.add(
-        InlineKeyboardButton("⬅️ Назад", callback_data="back_main")
-    )
+    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
@@ -128,8 +122,73 @@ def start(message):
         "♻️ Обновляем интерфейс...",
         reply_markup=ReplyKeyboardRemove()
     )
-
     main_menu(message.chat.id, message.from_user.id)
+
+# ===== УРОК =====
+def alphabet_lesson(chat_id, user_id):
+    user = get_user(user_id)
+    step = user["step"]
+
+    if step == 0:
+        text = """
+🔤 ШАГ 1: ЗНАКОМСТВО
+
+Буква: ا
+Название: Алиф
+
+Это первая буква арабского алфавита
+"""
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("Далее ➡️", callback_data="step_next"))
+
+    elif step == 1:
+        text = """
+🗣 ШАГ 2: ПРОИЗНОШЕНИЕ
+
+Это звук "А"
+
+👉 рот открыт  
+👉 звук чистый  
+
+❌ не "ээ"  
+❌ не "ааа"  
+
+✅ просто "А"
+"""
+        markup = InlineKeyboardMarkup(row_width=1)
+        markup.add(
+            InlineKeyboardButton("🔊 Слушать", callback_data="sound_alif"),
+            InlineKeyboardButton("Далее ➡️", callback_data="step_next")
+        )
+
+    elif step == 2:
+        text = """
+📖 ШАГ 3: ПРИМЕРЫ
+
+اَ → а  
+اُ → у  
+اِ → и  
+
+📘 أَبَ = аба (отец)
+"""
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("Далее ➡️", callback_data="step_next"))
+
+    elif step == 3:
+        text = """
+🎯 ШАГ 4: ТЕСТ
+
+Как читается буква:
+
+ا
+"""
+        markup = InlineKeyboardMarkup(row_width=2)
+        markup.add(
+            InlineKeyboardButton("А", callback_data="correct"),
+            InlineKeyboardButton("Б", callback_data="wrong")
+        )
+
+    bot.send_message(chat_id, text, reply_markup=markup)
 
 # ===== CALLBACK =====
 @bot.callback_query_handler(func=lambda call: True)
@@ -146,6 +205,31 @@ def callback(call):
     elif data == "learn":
         learn_menu(chat_id, user_id)
 
+    elif data == "alphabet":
+        user["step"] = 0
+        alphabet_lesson(chat_id, user_id)
+
+    elif data == "step_next":
+        user["step"] += 1
+        alphabet_lesson(chat_id, user_id)
+
+    elif data == "sound_alif":
+        file = generate_audio("ا")
+        audio = open(file, "rb")
+        bot.send_voice(chat_id, audio)
+
+    elif data == "correct":
+        user["xp"] += 10
+        bot.send_message(chat_id, "✅ Правильно! +10 XP")
+        user["step"] = 0
+
+    elif data == "wrong":
+        bot.send_message(chat_id, "❌ Неправильно. Это 'А'")
+        user["step"] = 0
+
+    elif data == "back_main":
+        main_menu(chat_id, user_id)
+
     elif data == "practice":
         bot.send_message(chat_id, "🧠 Практика скоро появится")
 
@@ -158,11 +242,8 @@ def callback(call):
     elif data == "ai":
         bot.send_message(chat_id, "🤖 Напиши свой вопрос")
 
-    elif data == "alphabet":
-        alphabet_lesson(chat_id)
-
     elif data == "reading":
-        bot.send_message(chat_id, "📖 Основы чтения скоро")
+        bot.send_message(chat_id, "📖 Основы скоро")
 
     elif data == "tajweed":
         bot.send_message(chat_id, "📚 Таджвид скоро")
@@ -171,65 +252,7 @@ def callback(call):
         bot.send_message(chat_id, "📖 Коран скоро")
 
     elif data == "ai_check":
-        if not user["premium"]:
-            bot.send_message(chat_id, """
-🎤 Проверка чтения (AI)
-
-Этот раздел будет платным.
-
-Скоро откроется.
-""")
-        else:
-            bot.send_message(chat_id, "🎤 Начни читать...")
-
-    elif data == "back_main":
-        main_menu(chat_id, user_id)
-
-# ===== УРОК АЛИФ =====
-def alphabet_lesson(chat_id):
-    text = """
-┏━━━━━━━━━━━━━━━━━━━━━━┓
-        🔤 УРОК: АЛИФ
-┗━━━━━━━━━━━━━━━━━━━━━━┛
-
-📌 Буква: ا
-
-🗣 Произношение:
-"А" — открытый звук
-
-📖 Как читать:
-ا = а
-
-📍 Примеры:
-
-اَ — а  
-اُ — у  
-اِ — и  
-
-📘 Слово:
-أَبَ — аба (отец)
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-🎯 Попробуй:
-Как читается "ا"?
-"""
-
-    markup = InlineKeyboardMarkup()
-    markup.add(
-        InlineKeyboardButton("А", callback_data="correct"),
-        InlineKeyboardButton("Б", callback_data="wrong")
-    )
-
-    bot.send_message(chat_id, text, reply_markup=markup)
-
-# ===== ОТВЕТЫ =====
-@bot.callback_query_handler(func=lambda call: call.data in ["correct", "wrong"])
-def answers(call):
-    if call.data == "correct":
-        bot.send_message(call.message.chat.id, "✅ Правильно!")
-    else:
-        bot.send_message(call.message.chat.id, "❌ Неправильно. Это звук 'А'")
+        bot.send_message(chat_id, "🎤 AI проверка скоро будет")
 
 # ===== ЗАПУСК =====
 print("🚀 Бот запущен")
