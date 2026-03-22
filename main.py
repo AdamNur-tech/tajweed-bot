@@ -15,34 +15,34 @@ users = {}
 
 # ===== АЛФАВИТ =====
 letters = [
-    {"letter": "ا", "name": "Алиф", "base": "", "makhraj": "горло (без преграды)"},
-    {"letter": "ب", "name": "Ба", "base": "b", "makhraj": "губы"},
-    {"letter": "ت", "name": "Та", "base": "t", "makhraj": "кончик языка + зубы"},
-    {"letter": "ث", "name": "Са", "base": "th", "makhraj": "между зубами"},
-    {"letter": "ج", "name": "Джим", "base": "j", "makhraj": "середина языка"},
-    {"letter": "ح", "name": "Ха", "base": "ḥ", "makhraj": "середина горла"},
-    {"letter": "خ", "name": "Ха (глуб.)", "base": "kh", "makhraj": "верх горла"},
-    {"letter": "د", "name": "Даль", "base": "d", "makhraj": "кончик языка"},
-    {"letter": "ذ", "name": "Заль", "base": "dh", "makhraj": "между зубами"},
-    {"letter": "ر", "name": "Ра", "base": "r", "makhraj": "кончик языка"},
-    {"letter": "ز", "name": "Зай", "base": "z", "makhraj": "зубы"},
-    {"letter": "س", "name": "Син", "base": "s", "makhraj": "зубы"},
-    {"letter": "ش", "name": "Шин", "base": "sh", "makhraj": "середина языка"},
-    {"letter": "ص", "name": "Сад", "base": "ṣ", "makhraj": "зубы (твердо)"},
-    {"letter": "ض", "name": "Дад", "base": "ḍ", "makhraj": "бок языка"},
-    {"letter": "ط", "name": "Та (тв.)", "base": "ṭ", "makhraj": "кончик языка (твердо)"},
-    {"letter": "ظ", "name": "За (тв.)", "base": "ẓ", "makhraj": "между зубами (твердо)"},
-    {"letter": "ع", "name": "Айн", "base": "ʿ", "makhraj": "глубина горла"},
-    {"letter": "غ", "name": "Гайн", "base": "gh", "makhraj": "верх горла"},
-    {"letter": "ف", "name": "Фа", "base": "f", "makhraj": "губы + зубы"},
-    {"letter": "ق", "name": "Каф (глуб.)", "base": "q", "makhraj": "глубина языка"},
-    {"letter": "ك", "name": "Каф", "base": "k", "makhraj": "язык"},
-    {"letter": "ل", "name": "Лям", "base": "l", "makhraj": "язык"},
-    {"letter": "م", "name": "Мим", "base": "m", "makhraj": "губы"},
-    {"letter": "ن", "name": "Нун", "base": "n", "makhraj": "язык + нос"},
-    {"letter": "ه", "name": "Ха", "base": "h", "makhraj": "горло"},
-    {"letter": "و", "name": "Вау", "base": "w", "makhraj": "губы"},
-    {"letter": "ي", "name": "Я", "base": "y", "makhraj": "середина языка"},
+    {"letter": "ا", "name": "Алиф", "base": ""},
+    {"letter": "ب", "name": "Ба", "base": "b"},
+    {"letter": "ت", "name": "Та", "base": "t"},
+    {"letter": "ث", "name": "Са", "base": "th"},
+    {"letter": "ج", "name": "Джим", "base": "j"},
+    {"letter": "ح", "name": "Ха", "base": "ḥ"},
+    {"letter": "خ", "name": "Ха (глуб.)", "base": "kh"},
+    {"letter": "د", "name": "Даль", "base": "d"},
+    {"letter": "ذ", "name": "Заль", "base": "dh"},
+    {"letter": "ر", "name": "Ра", "base": "r"},
+    {"letter": "ز", "name": "Зай", "base": "z"},
+    {"letter": "س", "name": "Син", "base": "s"},
+    {"letter": "ش", "name": "Шин", "base": "sh"},
+    {"letter": "ص", "name": "Сад", "base": "ṣ"},
+    {"letter": "ض", "name": "Дад", "base": "ḍ"},
+    {"letter": "ط", "name": "Та (тв.)", "base": "ṭ"},
+    {"letter": "ظ", "name": "За (тв.)", "base": "ẓ"},
+    {"letter": "ع", "name": "Айн", "base": "ʿ"},
+    {"letter": "غ", "name": "Гайн", "base": "gh"},
+    {"letter": "ف", "name": "Фа", "base": "f"},
+    {"letter": "ق", "name": "Каф (глуб.)", "base": "q"},
+    {"letter": "ك", "name": "Каф", "base": "k"},
+    {"letter": "ل", "name": "Лям", "base": "l"},
+    {"letter": "م", "name": "Мим", "base": "m"},
+    {"letter": "ن", "name": "Нун", "base": "n"},
+    {"letter": "ه", "name": "Ха", "base": "h"},
+    {"letter": "و", "name": "Вау", "base": "w"},
+    {"letter": "ي", "name": "Я", "base": "y"},
 ]
 
 # ===== USER =====
@@ -86,27 +86,49 @@ def main_menu(chat_id, user_id):
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(InlineKeyboardButton("📚 Обучение", callback_data="learn"))
+
+    markup.add(InlineKeyboardButton("▶️ Продолжить", callback_data="continue"))
+
+    markup.add(
+        InlineKeyboardButton("📚 Обучение", callback_data="learn"),
+        InlineKeyboardButton("🧠 Практика", callback_data="practice")
+    )
+
+    markup.add(
+        InlineKeyboardButton("🎯 Заучивание", callback_data="memorize"),
+        InlineKeyboardButton("📊 Прогресс", callback_data="progress")
+    )
+
+    markup.add(
+        InlineKeyboardButton("🤖 AI Учитель", callback_data="ai"),
+        InlineKeyboardButton("🎤 Проверка чтения", callback_data="ai_check")
+    )
+
     bot.send_message(chat_id, text, reply_markup=markup)
 
 # ===== ОБУЧЕНИЕ =====
-def learn_menu(chat_id):
+def learn_menu(chat_id, user_id):
     text = """
 📚 ОБУЧЕНИЕ
 
+Выбери модуль:
+
 🔤 Алфавит
 """
+
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"))
     markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
+
     bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== УРОК =====
+# ===== АЛФАВИТ =====
 def alphabet_lesson(chat_id, user_id):
     user = get_user(user_id)
     letter = letters[user["letter_index"]]
     base = letter["base"]
 
+    # харакаты
     fatha = base + "a"
     damma = base + "u"
     kasra = base + "i"
@@ -114,26 +136,22 @@ def alphabet_lesson(chat_id, user_id):
     text = f"""
 🔤 {letter['letter']} — {letter['name']}
 
-📍 Махрадж:
-{letter['makhraj']}
-
 📖 Харакаты:
 
 {letter['letter']}َ → {fatha}
 {letter['letter']}ُ → {damma}
 {letter['letter']}ِ → {kasra}
 
-📚 Слоги:
-
+📌 Чтение:
 {fatha} / {damma} / {kasra}
 
-🎧 Слушай и повторяй
+🎧 Нажми слушать
 """
 
-    markup = InlineKeyboardMarkup()
+    markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton("🔊 Слушать", callback_data="sound"),
-        InlineKeyboardButton("➡️ Далее", callback_data="next")
+        InlineKeyboardButton("🔊 Слушать", callback_data="sound_letter"),
+        InlineKeyboardButton("➡️ Далее", callback_data="next_letter")
     )
     markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="learn"))
 
@@ -159,13 +177,13 @@ def callback(call):
     user = get_user(user_id)
 
     if data == "learn":
-        learn_menu(chat_id)
+        learn_menu(chat_id, user_id)
 
     elif data == "alphabet":
         user["letter_index"] = 0
         alphabet_lesson(chat_id, user_id)
 
-    elif data == "next":
+    elif data == "next_letter":
         user["letter_index"] += 1
         if user["letter_index"] < len(letters):
             alphabet_lesson(chat_id, user_id)
@@ -173,14 +191,31 @@ def callback(call):
             bot.send_message(chat_id, "🎉 Алфавит завершён!")
             user["letter_index"] = 0
 
-    elif data == "sound":
+    elif data == "sound_letter":
         letter = letters[user["letter_index"]]["letter"]
         file = generate_audio(letter)
-        audio = open(file, "rb")
-        bot.send_voice(chat_id, audio)
+        bot.send_voice(chat_id, open(file, "rb"))
 
     elif data == "back_main":
         main_menu(chat_id, user_id)
+
+    elif data == "continue":
+        bot.send_message(chat_id, "🚀 Продолжение скоро будет")
+
+    elif data == "practice":
+        bot.send_message(chat_id, "🧠 Практика скоро будет")
+
+    elif data == "memorize":
+        bot.send_message(chat_id, "🎯 Заучивание скоро будет")
+
+    elif data == "progress":
+        bot.send_message(chat_id, "📊 Прогресс скоро будет")
+
+    elif data == "ai":
+        bot.send_message(chat_id, "🤖 Напиши свой вопрос")
+
+    elif data == "ai_check":
+        bot.send_message(chat_id, "🎤 Отправь голос")
 
 # ===== RUN =====
 print("🚀 Бот запущен")
