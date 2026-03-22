@@ -1,4 +1,3 @@
-
 import os
 import telebot
 from telebot.types import (
@@ -20,7 +19,7 @@ def get_user(user_id):
             "level": "Новичок",
             "xp": 0,
             "streak": 0,
-            "current": "🔤 Алфавит → Буква ا",
+            "current": "Алфавит → Буква ا (Алиф)",
             "premium": False
         }
     return users[user_id]
@@ -30,29 +29,32 @@ def main_menu(chat_id, user_id):
     user = get_user(user_id)
 
     text = f"""
-╔══════════════════╗
-     📖 TAJWEED PRO
-╚══════════════════╝
+┏━━━━━━━━━━━━━━━━━━━━━━┓
+        📖 TAJWEED PRO
+┗━━━━━━━━━━━━━━━━━━━━━━┛
 
+﷽
 خيركم من تعلم القرآن وعلمه
 
 «Лучший из вас — тот,
 кто изучает Коран и обучает ему»
 
-━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━
 
-✨ Начни путь к правильному чтению
+✨ Начни путь к правильному чтению Корана
+
+━━━━━━━━━━━━━━━━━━━━━━
 
 👤 Уровень: {user['level']}
 ⭐ XP: {user['xp']}
 🔥 Серия: {user['streak']} дней
 
-━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━
 
 📍 Текущий урок:
-{user['current']}
+🔤 {user['current']}
 
-━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━
 
 🚀 Выбери действие:
 """
@@ -82,18 +84,18 @@ def main_menu(chat_id, user_id):
 # ===== МЕНЮ ОБУЧЕНИЯ =====
 def learn_menu(chat_id, user_id):
     text = """
-╔══════════════════╗
-     📚 ОБУЧЕНИЕ
-╚══════════════════╝
+┏━━━━━━━━━━━━━━━━━━━━━━┓
+        📚 ОБУЧЕНИЕ
+┗━━━━━━━━━━━━━━━━━━━━━━┛
 
 Выбери модуль:
 
 🔤 Алфавит — буквы и звуки  
-📖 Основы чтения — слова  
+📖 Основы — чтение слов  
 📚 Таджвид — правила  
 📖 Коран — практика  
 
-━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━
 """
 
     markup = InlineKeyboardMarkup(row_width=2)
@@ -118,7 +120,7 @@ def learn_menu(chat_id, user_id):
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
-# ===== START (УДАЛЯЕМ СТАРОЕ МЕНЮ) =====
+# ===== START =====
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(
@@ -157,7 +159,7 @@ def callback(call):
         bot.send_message(chat_id, "🤖 Напиши свой вопрос")
 
     elif data == "alphabet":
-        bot.send_message(chat_id, "🔤 Алфавит скоро начнём")
+        alphabet_lesson(chat_id)
 
     elif data == "reading":
         bot.send_message(chat_id, "📖 Основы чтения скоро")
@@ -182,6 +184,52 @@ def callback(call):
 
     elif data == "back_main":
         main_menu(chat_id, user_id)
+
+# ===== УРОК АЛИФ =====
+def alphabet_lesson(chat_id):
+    text = """
+┏━━━━━━━━━━━━━━━━━━━━━━┓
+        🔤 УРОК: АЛИФ
+┗━━━━━━━━━━━━━━━━━━━━━━┛
+
+📌 Буква: ا
+
+🗣 Произношение:
+"А" — открытый звук
+
+📖 Как читать:
+ا = а
+
+📍 Примеры:
+
+اَ — а  
+اُ — у  
+اِ — и  
+
+📘 Слово:
+أَبَ — аба (отец)
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 Попробуй:
+Как читается "ا"?
+"""
+
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("А", callback_data="correct"),
+        InlineKeyboardButton("Б", callback_data="wrong")
+    )
+
+    bot.send_message(chat_id, text, reply_markup=markup)
+
+# ===== ОТВЕТЫ =====
+@bot.callback_query_handler(func=lambda call: call.data in ["correct", "wrong"])
+def answers(call):
+    if call.data == "correct":
+        bot.send_message(call.message.chat.id, "✅ Правильно!")
+    else:
+        bot.send_message(call.message.chat.id, "❌ Неправильно. Это звук 'А'")
 
 # ===== ЗАПУСК =====
 print("🚀 Бот запущен")
