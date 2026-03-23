@@ -12,125 +12,83 @@
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #0f2e23;
+    background: #e6d3a3;
+    font-family: sans-serif;
 }
 
-/* ОСНОВА */
+/* ФОН С УЗОРОМ */
 .wrapper {
     max-width: 420px;
     margin: auto;
-    min-height: 100vh;
-    padding: 15px;
-    box-sizing: border-box;
+    padding: 10px;
 
     background:
     url("https://www.transparenttextures.com/patterns/arabesque.png"),
-    linear-gradient(#f3e2b8,#d6bc7f);
-
-    background-size: 200px, cover;
+    #e6d3a3;
 }
 
-/* АРКА */
+/* ЗАГОЛОВОК */
 .header {
-    background: linear-gradient(180deg,#1e4b3a,#123126);
-    border-radius: 30px;
-    padding: 22px;
+    background: linear-gradient(#1e4b3a,#123126);
+    border-radius: 40px;
+    padding: 18px;
     text-align: center;
-
-    color: #ffd700;
-    font-size: 22px;
+    color: gold;
+    font-size: 20px;
     font-weight: bold;
-
-    box-shadow:
-        inset 0 0 20px rgba(0,0,0,0.6),
-        0 6px 12px rgba(0,0,0,0.4);
+    margin-bottom: 15px;
 }
 
 /* СЕТКА */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-/* КАРТОЧКИ */
-.card {
-    background: linear-gradient(145deg,#f9e6b5,#caa75c);
-    border-radius: 20px;
-    padding: 20px;
-
-    text-align: center;
-    font-weight: bold;
-    color: #2a2a2a;
-
-    box-shadow:
-        0 8px 18px rgba(0,0,0,0.4),
-        inset 0 2px 5px rgba(255,255,255,0.5);
-
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.card:active {
-    transform: scale(0.95);
-}
-
-/* ИКОНКИ */
-.icon {
-    font-size: 30px;
-    margin-bottom: 8px;
-}
-
-/* НИЖНИЕ КНОПКИ */
-.bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-top: 12px;
 }
 
-.small-card {
-    background: linear-gradient(145deg,#e8d29a,#bfa45a);
-    border-radius: 15px;
-    padding: 12px;
+/* КАРТОЧКИ = КАРТИНКИ */
+.card img {
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
 
-    text-align: center;
-    font-weight: 500;
+/* НИЖНИЕ */
+.bottom {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+.bottom img {
+    width: 50%;
+    border-radius: 12px;
 }
 
 /* ХАДИС */
 .hadith {
-    margin-top: 25px;
     text-align: center;
+    margin-top: 20px;
 }
 
 .hadith-ar {
-    font-size: 18px;
     color: #b38b2d;
-    margin-bottom: 6px;
+    font-size: 16px;
 }
 
 .hadith-ru {
     font-size: 14px;
-    color: #333;
 }
 
-/* КНОПКА НАЗАД */
+/* НАЗАД */
 .back {
-    margin-top: 20px;
-    padding: 15px;
+    margin-top: 15px;
+    padding: 14px;
     border-radius: 20px;
-
     background: linear-gradient(#2f5a45,#1c3a2d);
     color: white;
     text-align: center;
     font-weight: bold;
-
-    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
 }
 
 </style>
@@ -147,31 +105,27 @@ body {
 <div class="grid">
 
 <div class="card" onclick="openModule('alphabet')">
-<div class="icon">📖</div>
-Алфавит
+<img src="https://i.imgur.com/3QZ7Z7b.png">
 </div>
 
 <div class="card" onclick="openModule('tajweed')">
-<div class="icon">📜</div>
-Правила
+<img src="https://i.imgur.com/2b9Yy7L.png">
 </div>
 
 <div class="card" onclick="openModule('forms')">
-<div class="icon">🔤</div>
-Формы
+<img src="https://i.imgur.com/Y7b9K3D.png">
 </div>
 
 <div class="card" onclick="openModule('practice')">
-<div class="icon">🎧</div>
-Практика
+<img src="https://i.imgur.com/4Zp7m5S.png">
 </div>
 
 </div>
 
-<div class="bottom-grid">
+<div class="bottom">
 
-<div class="small-card">📘 Словарь</div>
-<div class="small-card">✅ Тесты</div>
+<img src="https://i.imgur.com/vK6pF8x.png">
+<img src="https://i.imgur.com/jL9F4Vd.png">
 
 </div>
 
