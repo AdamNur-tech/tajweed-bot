@@ -227,6 +227,8 @@ def alphabet_lesson(chat_id, user_id):
 # ===== CALLBACK =====
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
+    bot.answer_callback_query(call.id)
+
     user = get_user(call.from_user.id)
     chat_id = call.message.chat.id
 
@@ -236,15 +238,23 @@ def callback(call):
     elif call.data == "alphabet":
         user["step"] = 0
         user["letter_index"] = 0
-        alphabet_lesson(chat_id, call.from_user.id
+        alphabet_lesson(chat_id, call.from_user.id)
 
-elif call.data == "forms":
-    bot.send_message(chat_id, "🔄 Видоизменение букв\n(картинка скоро будет)")
+    elif call.data == "forms":
+        with open("images/arabic_letters_table_fixed.png", "rb") as photo:
+            bot.send_photo(chat_id, photo, caption="🔄 Видоизменение букв")
 
+    elif call.data == "connect":
+        bot.send_message(chat_id, "🔗 Соединение букв скоро будет")
 
+    elif call.data == "tajweed":
+        bot.send_message(chat_id, "📜 Правила таджвида скоро будут")
 
-        
- 
+    elif call.data == "reading":
+        bot.send_message(chat_id, "📖 Виды чтения скоро будут")
+
+    elif call.data == "practice_read":
+        bot.send_message(chat_id, "🎧 Практика чтения скоро будет")
 
     elif call.data == "to_test":
         user["step"] = 1
