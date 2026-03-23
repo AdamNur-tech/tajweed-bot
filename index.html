@@ -1,101 +1,19 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(#1b2f26, #0d1a14);
-    color: white;
-    text-align: center;
-}
-
-/* КОНТЕЙНЕР */
-.container {
-    padding: 20px;
-}
-
-/* ВЕРХ (АРКА СТИЛЬ) */
-.header {
-    font-size: 26px;
-    font-weight: bold;
-    color: gold;
-    margin-bottom: 20px;
-}
-
-/* СЕТКА */
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-/* КАРТОЧКИ */
-.card {
-    background: linear-gradient(145deg, #d4af37, #a67c00);
-    border-radius: 18px;
-    padding: 20px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #1b1b1b;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.card:active {
-    transform: scale(0.95);
-}
-
-/* НИЖНИЙ БЛОК */
-.bottom {
-    margin-top: 35px;
-}
-
-/* ХАДИС */
-.hadith-ar {
-    font-size: 18px;
-    color: gold;
-    margin-bottom: 10px;
-}
-
-.hadith-ru {
-    font-size: 13px;
-    opacity: 0.8;
-}
-
-/* КНОПКА НАЗАД */
-.back {
-    margin-top: 20px;
-    padding: 12px;
-    border-radius: 12px;
-    background: #2c4d3b;
-    color: white;
-    font-weight: bold;
-}
-</style>
-</head>
-
-<body>
-
 <div class="container">
 
 <div class="header">📖 TajweedPro</div>
 
-<div class="grid">
+<div class="path">
 
-<div class="card" onclick="openModule('alphabet')">📖 Алфавит</div>
+<div class="circle" onclick="openModule('alphabet')">ا</div>
+<div class="line"></div>
 
-<div class="card" onclick="openModule('tajweed')">📜 Таджвид</div>
+<div class="circle" onclick="openModule('forms')">ب</div>
+<div class="line"></div>
 
-<div class="card" onclick="openModule('forms')">🔤 Формы</div>
+<div class="circle" onclick="openModule('tajweed')">ت</div>
+<div class="line"></div>
 
-<div class="card" onclick="openModule('practice')">🎧 Практика</div>
+<div class="circle" onclick="openModule('practice')">ث</div>
 
 </div>
 
@@ -114,16 +32,3 @@ body {
 </div>
 
 </div>
-
-<script>
-function openModule(module) {
-    Telegram.WebApp.sendData(module);
-}
-
-function goBack() {
-    Telegram.WebApp.close();
-}
-</script>
-
-</body>
-</html>
