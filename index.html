@@ -1,19 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<title>TajweedPro</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(#0f2e23, #061a14);
+    color: white;
+}
+
+/* КОНТЕЙНЕР */
+.container {
+    padding: 20px;
+    text-align: center;
+}
+
+/* ЗАГОЛОВОК */
+.header {
+    font-size: 26px;
+    font-weight: bold;
+    color: gold;
+    margin-bottom: 25px;
+}
+
+/* КАРТА */
+.map {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* РЯДЫ */
+.row {
+    display: flex;
+}
+
+.left {
+    justify-content: flex-start;
+}
+
+.right {
+    justify-content: flex-end;
+}
+
+/* КРУГИ */
+.circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #f5d36a, #c79b2b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: black;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    transition: 0.2s;
+}
+
+.circle:active {
+    transform: scale(0.9);
+}
+
+/* НИЖНИЙ БЛОК */
+.bottom {
+    margin-top: 50px;
+}
+
+/* ХАДИС */
+.hadith-ar {
+    font-size: 18px;
+    color: gold;
+    margin-bottom: 10px;
+}
+
+.hadith-ru {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* КНОПКА НАЗАД */
+.back {
+    margin-top: 20px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #2c4d3b;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
 <div class="container">
 
 <div class="header">📖 TajweedPro</div>
 
-<div class="path">
+<div class="map">
 
-<div class="circle" onclick="openModule('alphabet')">ا</div>
-<div class="line"></div>
+<div class="row left">
+    <div class="circle" onclick="openModule('alphabet')">ا</div>
+</div>
 
-<div class="circle" onclick="openModule('forms')">ب</div>
-<div class="line"></div>
+<div class="row right">
+    <div class="circle" onclick="openModule('forms')">ب</div>
+</div>
 
-<div class="circle" onclick="openModule('tajweed')">ت</div>
-<div class="line"></div>
+<div class="row left">
+    <div class="circle" onclick="openModule('tajweed')">ت</div>
+</div>
 
-<div class="circle" onclick="openModule('practice')">ث</div>
+<div class="row right">
+    <div class="circle" onclick="openModule('practice')">ث</div>
+</div>
 
 </div>
 
@@ -32,3 +141,16 @@
 </div>
 
 </div>
+
+<script>
+function openModule(module) {
+    Telegram.WebApp.sendData(module);
+}
+
+function goBack() {
+    Telegram.WebApp.close();
+}
+</script>
+
+</body>
+</html>
