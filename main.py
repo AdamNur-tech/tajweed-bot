@@ -239,13 +239,9 @@ def callback(call):
         alphabet_lesson(chat_id, call.from_user.id)
 
 elif call.data == "forms":
-    with open("images/arabic_letters_table_fixed.png", "rb") as photo:
+    bot.send_message(chat_id, "🔄 Видоизменение букв\n(картинка скоро будет)")
 
-        bot.send_photo(
-            chat_id,
-            photo,
-            caption="🔄 Видоизменение букв"
-        )
+
 
         
  
