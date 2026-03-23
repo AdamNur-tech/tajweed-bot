@@ -9,50 +9,66 @@
 <title>TajweedPro</title>
 
 <style>
+
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background: #0f2e23;
 }
 
-/* ОБЩАЯ РАМКА */
+/* ОСНОВА */
 .wrapper {
     max-width: 420px;
     margin: auto;
-    background: linear-gradient(#f1e0b5, #d8be84);
     min-height: 100vh;
     padding: 15px;
     box-sizing: border-box;
+
+    background:
+    url("https://www.transparenttextures.com/patterns/arabesque.png"),
+    linear-gradient(#f3e2b8,#d6bc7f);
+
+    background-size: 200px, cover;
 }
 
-/* ВЕРХ (ЗЕЛЁНАЯ АРКА) */
+/* АРКА */
 .header {
-    background: linear-gradient(#1e4b3a, #123126);
-    border-radius: 20px;
-    padding: 18px;
+    background: linear-gradient(180deg,#1e4b3a,#123126);
+    border-radius: 30px;
+    padding: 22px;
     text-align: center;
-    color: gold;
-    font-size: 20px;
+
+    color: #ffd700;
+    font-size: 22px;
     font-weight: bold;
-    margin-bottom: 15px;
+
+    box-shadow:
+        inset 0 0 20px rgba(0,0,0,0.6),
+        0 6px 12px rgba(0,0,0,0.4);
 }
 
 /* СЕТКА */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 15px;
+    margin-top: 15px;
 }
 
 /* КАРТОЧКИ */
 .card {
-    background: linear-gradient(145deg, #f7e2a6, #caa85a);
-    border-radius: 15px;
-    padding: 15px;
+    background: linear-gradient(145deg,#f9e6b5,#caa75c);
+    border-radius: 20px;
+    padding: 20px;
+
     text-align: center;
     font-weight: bold;
-    color: #2b2b2b;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    color: #2a2a2a;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.4),
+        inset 0 2px 5px rgba(255,255,255,0.5);
+
     cursor: pointer;
     transition: 0.2s;
 }
@@ -61,53 +77,62 @@ body {
     transform: scale(0.95);
 }
 
-.card-title {
-    margin-top: 10px;
+/* ИКОНКИ */
+.icon {
+    font-size: 30px;
+    margin-bottom: 8px;
 }
 
 /* НИЖНИЕ КНОПКИ */
 .bottom-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
     margin-top: 12px;
 }
 
 .small-card {
-    background: linear-gradient(145deg, #e7d29a, #bfa45a);
-    padding: 10px;
-    border-radius: 12px;
+    background: linear-gradient(145deg,#e8d29a,#bfa45a);
+    border-radius: 15px;
+    padding: 12px;
+
     text-align: center;
-    font-size: 14px;
+    font-weight: 500;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 /* ХАДИС */
 .hadith {
-    margin-top: 20px;
+    margin-top: 25px;
     text-align: center;
 }
 
 .hadith-ar {
+    font-size: 18px;
     color: #b38b2d;
-    font-size: 16px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .hadith-ru {
-    font-size: 13px;
+    font-size: 14px;
     color: #333;
 }
 
-/* НАЗАД */
+/* КНОПКА НАЗАД */
 .back {
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 12px;
-    background: #2c4d3b;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 20px;
+
+    background: linear-gradient(#2f5a45,#1c3a2d);
     color: white;
     text-align: center;
     font-weight: bold;
+
+    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
 }
+
 </style>
 </head>
 
@@ -122,23 +147,23 @@ body {
 <div class="grid">
 
 <div class="card" onclick="openModule('alphabet')">
-📖
-<div class="card-title">Алфавит</div>
+<div class="icon">📖</div>
+Алфавит
 </div>
 
 <div class="card" onclick="openModule('tajweed')">
-📜
-<div class="card-title">Правила</div>
+<div class="icon">📜</div>
+Правила
 </div>
 
 <div class="card" onclick="openModule('forms')">
-🔤
-<div class="card-title">Формы</div>
+<div class="icon">🔤</div>
+Формы
 </div>
 
 <div class="card" onclick="openModule('practice')">
-🎧
-<div class="card-title">Практика</div>
+<div class="icon">🎧</div>
+Практика
 </div>
 
 </div>
