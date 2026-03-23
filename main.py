@@ -236,7 +236,7 @@ def callback(call):
     elif call.data == "alphabet":
         user["step"] = 0
         user["letter_index"] = 0
-        alphabet_lesson(chat_id, call.from_user.id)
+        alphabet_lesson(chat_id, call.from_user.id
 
 elif call.data == "forms":
     bot.send_message(chat_id, "🔄 Видоизменение букв\n(картинка скоро будет)")
