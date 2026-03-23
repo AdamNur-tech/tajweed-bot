@@ -1,118 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tajweed AI PRO</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
-body{margin:0;font-family:system-ui;background:#0f172a;color:#fff}
-.header{padding:14px;text-align:center;background:#020617}
-.wrap{padding:16px}
-.card{background:#1e293b;border-radius:14px;padding:16px;margin-top:12px}
-.big{font-size:54px;text-align:center;margin:8px 0}
-button{width:100%;padding:14px;margin-top:10px;border:0;border-radius:12px;background:#22c55e;color:#fff}
-.alt{background:#334155}
-.progress{height:8px;background:#334155;border-radius:8px;margin-top:8px}
-.bar{height:8px;background:#22c55e;border-radius:8px;width:0%}
-.hidden{display:none}
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(#1b2f26, #0d1a14);
+    color: white;
+    text-align: center;
+}
+
+/* КОНТЕЙНЕР */
+.container {
+    padding: 20px;
+}
+
+/* ВЕРХ (АРКА СТИЛЬ) */
+.header {
+    font-size: 26px;
+    font-weight: bold;
+    color: gold;
+    margin-bottom: 20px;
+}
+
+/* СЕТКА */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* КАРТОЧКИ */
+.card {
+    background: linear-gradient(145deg, #d4af37, #a67c00);
+    border-radius: 18px;
+    padding: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #1b1b1b;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.card:active {
+    transform: scale(0.95);
+}
+
+/* НИЖНИЙ БЛОК */
+.bottom {
+    margin-top: 35px;
+}
+
+/* ХАДИС */
+.hadith-ar {
+    font-size: 18px;
+    color: gold;
+    margin-bottom: 10px;
+}
+
+.hadith-ru {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* КНОПКА НАЗАД */
+.back {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #2c4d3b;
+    color: white;
+    font-weight: bold;
+}
 </style>
 </head>
+
 <body>
 
-<div class="header">🕌 Tajweed AI PRO</div>
+<div class="container">
 
-<div id="home" class="wrap">
-  <button onclick="start()">📚 Продолжить</button>
-  <button class="alt" onclick="askAI()">🧠 Спросить учителя</button>
+<div class="header">📖 TajweedPro</div>
+
+<div class="grid">
+
+<div class="card" onclick="openModule('alphabet')">📖 Алфавит</div>
+
+<div class="card" onclick="openModule('tajweed')">📜 Таджвид</div>
+
+<div class="card" onclick="openModule('forms')">🔤 Формы</div>
+
+<div class="card" onclick="openModule('practice')">🎧 Практика</div>
+
 </div>
 
-<div id="lesson" class="wrap hidden">
-  <div class="card">
-    <div class="big" id="l_title"></div>
-    <div id="l_text"></div>
-    <div class="progress"><div id="bar" class="bar"></div></div>
-    <button onclick="toQuiz()">Далее</button>
-  </div>
+<div class="bottom">
+
+<div class="hadith-ar">
+خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ
 </div>
 
-<div id="quiz" class="wrap hidden">
-  <div class="card">
-    <h3 id="q_text"></h3>
-    <button id="a0" onclick="answer(0)"></button>
-    <button id="a1" onclick="answer(1)"></button>
-    <button id="a2" onclick="answer(2)"></button>
-  </div>
+<div class="hadith-ru">
+Лучший из вас тот, кто изучает Коран и обучает ему
 </div>
 
-<div id="result" class="wrap hidden">
-  <div class="card">
-    <h2 id="res"></h2>
-    <button onclick="next()">Дальше</button>
-  </div>
+<div class="back" onclick="goBack()">⬅️ Назад</div>
+
+</div>
+
 </div>
 
 <script>
-const params = new URLSearchParams(location.search);
-let uid = params.get("uid") || "1"; // для теста
-
-let state = null;
-
-function show(id){
-  ["home","lesson","quiz","result"].forEach(s=>document.getElementById(s).classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
+function openModule(module) {
+    Telegram.WebApp.sendData(module);
 }
 
-async function load(){
-  const r = await fetch(`/api/state?uid=${uid}`);
-  state = await r.json();
-}
-
-function start(){
-  load().then(()=>{
-    if(!state.item){ alert("Курс закончен"); return; }
-    document.getElementById("l_title").innerText = state.item.title || "Урок";
-    document.getElementById("l_text").innerText = state.item.content || "";
-    const p = (state.user.step / 5) * 100;
-    document.getElementById("bar").style.width = p + "%";
-    show("lesson");
-  });
-}
-
-function toQuiz(){
-  const it = state.item;
-  if(it.type!=="quiz"){ next(); return; }
-  document.getElementById("q_text").innerText = it.q;
-  it.opts.forEach((o,i)=>document.getElementById("a"+i).innerText=o);
-  show("quiz");
-}
-
-async function answer(i){
-  const r = await fetch("/api/answer",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({uid:uid, i:i})
-  });
-  const d = await r.json();
-  document.getElementById("res").innerText = d.correct ? "✅ Правильно" : "❌ Ошибка";
-  show("result");
-}
-
-async function next(){
-  await fetch("/api/next",{method:"POST",headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({uid:uid})});
-  start();
-}
-
-async function askAI(){
-  const q = prompt("Что объяснить?");
-  if(!q) return;
-  const r = await fetch("/api/ai_explain",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({text:q})
-  });
-  const d = await r.json();
-  alert(d.answer);
+function goBack() {
+    Telegram.WebApp.close();
 }
 </script>
+
 </body>
 </html>
