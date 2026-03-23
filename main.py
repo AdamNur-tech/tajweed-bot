@@ -273,4 +273,44 @@ def start(message):
     main_menu(message.chat.id, message.from_user.id)
 
 print("🚀 Бот запущен")
+def learn_menu(chat_id, user_id):
+    markup = InlineKeyboardMarkup(row_width=2)
+
+    markup.add(
+        InlineKeyboardButton("🔤 Алфавит", callback_data="alphabet"),
+        InlineKeyboardButton("🔄 Видоизменение", callback_data="forms")
+    )
+
+    markup.add(
+        InlineKeyboardButton("🔗 Соединение", callback_data="connect"),
+        InlineKeyboardButton("📜 Правила таджвида", callback_data="tajweed")
+    )
+
+    markup.add(
+        InlineKeyboardButton("📖 Виды чтения", callback_data="reading"),
+        InlineKeyboardButton("🎧 Практика чтения", callback_data="practice_read")
+    )
+
+    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
+
+    bot.send_message(chat_id, "📚 ОБУЧЕНИЕ", reply_markup=markup)
+@bot.callback_query_handler(func=lambda call: call.data == "connect")
+def connect_module(call):
+    bot.send_message(call.message.chat.id, "🔗 Соединение букв скоро будет")
+
+@bot.callback_query_handler(func=lambda call: call.data == "tajweed")
+def tajweed_module(call):
+    bot.send_message(call.message.chat.id, "📜 Правила таджвида скоро будут")
+
+@bot.callback_query_handler(func=lambda call: call.data == "reading")
+def reading_module(call):
+    bot.send_message(call.message.chat.id, "📖 Виды чтения скоро будут")
+
+@bot.callback_query_handler(func=lambda call: call.data == "practice_read")
+def practice_module(call):
+    bot.send_message(call.message.chat.id, "🎧 Практика чтения скоро будет")
+@bot.callback_query_handler(func=lambda call: call.data == "forms")
+def override_forms(call):
+    with open("images/arabic_letters_table_fixed.png", "rb") as photo:
+        bot.send_photo(call.message.chat.id, photo)
 bot.polling(none_stop=True)
