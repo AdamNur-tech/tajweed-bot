@@ -233,18 +233,18 @@ def callback(call):
     chat_id = call.message.chat.id
 
     if call.data == "learn":
-        learn_menu(chat_id,call.from_user.id)
+        learn_menu(chat_id, call.from_user.id)
 
     elif call.data == "alphabet":
         user["step"] = 0
         user["letter_index"] = 0
-   alphabet_lesson(chat_id,call.from_user.id)
+        alphabet_lesson(chat_id, call.from_user.id)
 
     elif call.data == "forms":
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="learn"))
- photo=open("arabic_letters_table_fixed.png", "rb")
-bot.send_photo(chat_id,photo,reply_markup=markup)
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="learn"))
+        photo = open("arabic_letters_table_fixed.png", "rb")
+        bot.send_photo(chat_id, photo, reply_markup=markup)
 
     elif call.data == "connect":
         bot.send_message(chat_id, "🔗 Соединение букв скоро будет")
