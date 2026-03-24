@@ -23,11 +23,11 @@ html, body {
     position: relative;
 }
 
-/* КАРТИНКА МЕНЮ */
+/* МЕНЮ КАРТИНКА */
 .bg {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100vh;
+    object-fit: cover;
 }
 
 /* АЛФАВИТ */
@@ -69,12 +69,11 @@ button {
 </head>
 <body>
 
-<!-- ГЛАВНОЕ МЕНЮ -->
+<!-- МЕНЮ -->
 <div id="main">
 
 <img src="menu.png" class="bg">
 
-<!-- НЕВИДИМЫЕ КНОПКИ -->
 <button onclick="openModule('alphabet')" style="position:absolute; top:37%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
 <button onclick="openModule('rules')" style="position:absolute; top:37%; right:5%; width:40%; height:12%; opacity:0;"></button>
@@ -92,21 +91,21 @@ button {
 <!-- АЛФАВИТ -->
 <div id="alphabet" class="screen alphabet">
 
-<div class="letter" onclick="playSound()">ا</div>
+<div class="letter" onclick="speak('ا')">ا</div>
 
 <h2>Алиф</h2>
 
 <p>🔊 Звук: А</p>
 
-<button class="sound-btn" onclick="playSound()">🔊 Прослушать</button>
+<button class="sound-btn" onclick="speak('ا')">🔊 Прослушать</button>
 
 <p>Алиф — первая буква арабского алфавита</p>
 
 <h3>Харакаты:</h3>
 
-<button onclick="playFatha()">أَ</button>
-<button onclick="playKasra()">إِ</button>
-<button onclick="playDamma()">أُ</button>
+<button onclick="speak('أَ')">أَ</button>
+<button onclick="speak('إِ')">إِ</button>
+<button onclick="speak('أُ')">أُ</button>
 
 <br>
 
@@ -161,48 +160,28 @@ function goBack() {
     document.getElementById("main").style.display = "block";
 }
 
-/* РАЗБЛОКИРОВКА ЗВУКА */
-let unlocked = false;
+/* ЗВУК (СТАБИЛЬНЫЙ) */
+let voices = [];
 
-document.addEventListener("click", () => {
-    if (!unlocked) {
-        let s = new SpeechSynthesisUtterance("a");
-        speechSynthesis.speak(s);
-        speechSynthesis.cancel();
-        unlocked = true;
+speechSynthesis.onvoiceschanged = () => {
+    voices = speechSynthesis.getVoices();
+};
+
+function speak(text) {
+    speechSynthesis.cancel();
+
+    let utter = new SpeechSynthesisUtterance(text);
+
+    let arabicVoice = voices.find(v => v.lang.includes("ar"));
+
+    if (arabicVoice) {
+        utter.voice = arabicVoice;
     }
-});
 
-/* ЗВУКИ */
-function playSound() {
-    speechSynthesis.cancel();
+    utter.lang = "ar-SA";
+    utter.rate = 0.8;
 
-    let s = new SpeechSynthesisUtterance("أَ");
-    s.lang = "ar-SA";
-    s.rate = 0.8;
-
-    speechSynthesis.speak(s);
-}
-
-function playFatha() {
-    speechSynthesis.cancel();
-    let s = new SpeechSynthesisUtterance("أَ");
-    s.lang = "ar-SA";
-    speechSynthesis.speak(s);
-}
-
-function playKasra() {
-    speechSynthesis.cancel();
-    let s = new SpeechSynthesisUtterance("إِ");
-    s.lang = "ar-SA";
-    speechSynthesis.speak(s);
-}
-
-function playDamma() {
-    speechSynthesis.cancel();
-    let s = new SpeechSynthesisUtterance("أُ");
-    s.lang = "ar-SA";
-    speechSynthesis.speak(s);
+    speechSynthesis.speak(utter);
 }
 
 </script>
