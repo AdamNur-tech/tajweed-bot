@@ -3,185 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Tajweed</title>
+<title>Tajweed App</title>
 
 <style>
-html, body {
+body {
     margin: 0;
-    padding: 0;
-    height: 100%;
+    font-family: Arial;
     background: #0f3b2e;
-    display: flex;
-    justify-content: center;
-}
-
-/* контейнер */
-.container {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    min-height: 100vh;
-}
-
-/* картинка */
-.bg {
-    width: 100%;
-    display: block;
-}
-
-/* кнопки */
-.btn {
-    position: absolute;
-    background: transparent;
-    border: none;
-}
-
-/* === КНОПКИ === */
-
-/* 1 ряд */
-.btn1 { top: 36%; left: 6%; width: 40%; height: 11%; }
-.btn2 { top: 36%; right: 6%; width: 40%; height: 11%; }
-
-/* 2 ряд */
-.btn3 { top: 50%; left: 6%; width: 40%; height: 11%; }
-.btn4 { top: 50%; right: 6%; width: 40%; height: 11%; }
-
-/* 3 ряд */
-.btn5 { top: 64%; left: 6%; width: 40%; height: 9%; }
-.btn6 { top: 64%; right: 6%; width: 40%; height: 9%; }
-
-/* назад */
-.back {
-    top: 84%;
-    left: 10%;
-    width: 80%;
-    height: 8%;
-}
-
-/* скрытые экраны */
-.screen {
-    display: none;
-    padding: 20px;
     color: white;
     text-align: center;
 }
 
-.screen button {
-    margin-top: 20px;
-    padding: 10px 20px;
+.screen {
+    display: none;
+    padding: 20px;
+}
+
+#main {
+    display: block;
+}
+
+/* КНОПКИ */
+.btn {
+    display: block;
+    width: 90%;
+    margin: 10px auto;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 12px;
+    border: none;
+    background: gold;
+    color: black;
+    font-weight: bold;
+}
+
+/* КНОПКИ НАЗАД */
+.back {
+    background: #1f5c45;
+    color: white;
+}
+
+/* БУКВА */
+.letter {
+    font-size: 80px;
+    margin: 20px 0;
+}
+
+/* КНОПКИ ЗВУКА */
+.sound-btn {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<!-- ГЛАВНЫЙ ЭКРАН -->
-<div id="main" class="screen" style="display:block;">
+<!-- ГЛАВНОЕ МЕНЮ -->
+<div id="main">
 
-<div class="container">
+<h2>📖 Изучение таджвида</h2>
 
-    <img src="menu.png" class="bg">
+<button class="btn" onclick="openModule('alphabet')">Алфавит</button>
 
-    <!-- КНОПКИ -->
-    <button class="btn btn1" onclick="openModule('alphabet')"></button>
-    <button class="btn btn2" onclick="openModule('rules')"></button>
+<button class="btn" onclick="openModule('rules')">Правила таджвида</button>
 
-    <button class="btn btn3" onclick="openModule('forms')"></button>
-    <button class="btn btn4" onclick="openModule('practice')"></button>
+<button class="btn" onclick="openModule('forms')">Видоизменение букв</button>
 
-    <button class="btn btn5" onclick="openModule('qiraat')"></button>
-    <button class="btn btn6" onclick="openModule('lessons')"></button>
+<button class="btn" onclick="openModule('practice')">Практика чтения</button>
 
-    <button class="btn back" onclick="goBack()"></button>
+<button class="btn" onclick="openModule('qiraat')">Виды чтения</button>
+
+<button class="btn" onclick="openModule('lessons')">Уроки</button>
 
 </div>
 
-</div>
-
-<!-- ЭКРАНЫ -->
-
+<!-- АЛФАВИТ -->
 <div id="alphabet" class="screen">
 
-<div style="max-width:400px; margin:auto;">
+<h2>Алфавит</h2>
 
-    <!-- БУКВА -->
-    <div style="font-size:80px; margin-top:20px;">ا</div>
+<div class="letter" onclick="playSound()">ا</div>
 
-    <!-- НАЗВАНИЕ -->
-    <h2>Алиф</h2>
+<h3>Алиф</h3>
 
-    <!-- ЗВУК -->
-    <p>📢 Звук: "А"</p>
+<p>🔊 Звук: А</p>
 
-    <!-- КНОПКА -->
-    <button onclick="playSound()">🔊 Прослушать</button>
+<button class="sound-btn" onclick="playSound()">🔊 Прослушать</button>
 
-    <!-- ОПИСАНИЕ -->
-    <p>
-        Алиф — первая буква арабского алфавита.
-    </p>
+<p>Алиф — первая буква арабского алфавита</p>
 
-    <!-- ХАРАКАТЫ -->
-    <h3>Харакаты:</h3>
-    <p style="font-size:30px;">
-        اَ  اِ  اُ
-    </p>
+<h3>Харакаты:</h3>
 
-    <!-- КНОПКИ -->
-    <div style="margin-top:20px;">
-        <button onclick="goBack()">⬅ Назад</button>
-        <button onclick="nextLetter()">➡ Далее</button>
-    </div>
+<button class="sound-btn" onclick="playFatha()">َ А</button>
+<button class="sound-btn" onclick="playKasra()">ِ И</button>
+<button class="sound-btn" onclick="playDamma()">ُ У</button>
+
+<br><br>
+
+<button class="btn back" onclick="goBack()">← Назад</button>
 
 </div>
 
-</div>
-
+<!-- ДРУГИЕ ЭКРАНЫ -->
 <div id="rules" class="screen">
-    <h2>Правила таджвида</h2>
-    <button onclick="goBack()">⬅ Назад</button>
+<h2>Правила таджвида</h2>
+<button class="btn back" onclick="goBack()">← Назад</button>
 </div>
 
 <div id="forms" class="screen">
-    <h2>Видоизменение букв</h2>
-    <button onclick="goBack()">⬅ Назад</button>
+<h2>Видоизменение букв</h2>
+<button class="btn back" onclick="goBack()">← Назад</button>
 </div>
 
 <div id="practice" class="screen">
-    <h2>Практика чтения</h2>
-    <button onclick="goBack()">⬅ Назад</button>
+<h2>Практика чтения</h2>
+<button class="btn back" onclick="goBack()">← Назад</button>
 </div>
 
 <div id="qiraat" class="screen">
-    <h2>Виды чтения</h2>
-    <button onclick="goBack()">⬅ Назад</button>
+<h2>Виды чтения</h2>
+<button class="btn back" onclick="goBack()">← Назад</button>
 </div>
 
 <div id="lessons" class="screen">
-    <h2>Уроки</h2>
-    <button onclick="goBack()">⬅ Назад</button>
+<h2>Уроки</h2>
+<button class="btn back" onclick="goBack()">← Назад</button>
 </div>
 
+<!-- JS -->
 <script>
-function openModule(module) {
-    document.getElementById("main").style.display = "none";
-    document.getElementById(module).style.display = "block";
-}
-
-function goBack() {
-    document.querySelectorAll(".screen").forEach(el => el.style.display = "none");
-    document.getElementById("main").style.display = "block";
-}
-
-function playSound() {
-    let speech = new SpeechSynthesisUtterance("أَ");
-    speech.lang = "ar-SA";
-    speech.rate = 0.7;
-    speechSynthesis.speak(speech);
-
-}
-</script>
-
-</body>
-</html>
