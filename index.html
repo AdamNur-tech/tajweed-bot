@@ -139,42 +139,35 @@ function openPage(id) {
 
 /* ===== ПРАВИЛЬНЫЕ ЗВУКИ ===== */
 
-/* ===== ЗВУКИ АЛИФ (БЕЗ СУР!) ===== */
+function speak(text) {
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.lang = "ar-SA";
+    msg.rate = 0.6;
 
+    // ВАЖНО: ждём пока движок готов
+    window.speechSynthesis.cancel();
+
+    setTimeout(() => {
+        window.speechSynthesis.speak(msg);
+    }, 100);
+}
+
+/* АЛИФ */
 function playAlif() {
-    let msg = new SpeechSynthesisUtterance("ا");
-    msg.lang = "ar-SA";
-    msg.rate = 0.5;
-    msg.pitch = 1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(msg);
+    speak("ا");
 }
 
-/* ФАТХА (a) */
+/* ХАРАКАТЫ */
 function playA() {
-    let msg = new SpeechSynthesisUtterance("اَ");
-    msg.lang = "ar-SA";
-    msg.rate = 0.5;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(msg);
+    speak("اَ");
 }
 
-/* КАСРА (i) */
 function playI() {
-    let msg = new SpeechSynthesisUtterance("اِ");
-    msg.lang = "ar-SA";
-    msg.rate = 0.5;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(msg);
+    speak("اِ");
 }
 
-/* ДАММА (u) */
 function playU() {
-    let msg = new SpeechSynthesisUtterance("اُ");
-    msg.lang = "ar-SA";
-    msg.rate = 0.5;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(msg);
+    speak("اُ");
 }
 
 </script>
