@@ -5,112 +5,158 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tajweed App</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
-
 <style>
+
+/* ОБЩЕЕ */
 body {
     margin: 0;
     font-family: Arial;
-    background: #0f4d3a;
+    background: #0f4c3a;
+    color: white;
 }
 
-/* ===== СТРАНИЦЫ ===== */
-.page { display: none; }
-.active { display: block; }
-
-/* ===== МЕНЮ ===== */
-.menu {
-    position: relative;
-    max-width: 420px;
-    margin: auto;
+.page {
+    display: none;
 }
 
-.menu img {
-    width: 100%;
+.active {
     display: block;
 }
 
-.btn {
-    position: absolute;
-    width: 40%;
-    height: 11%;
-}
+/* ================= МЕНЮ ================= */
 
-.alphabet { top: 36%; left: 6%; }
-.rules    { top: 36%; right: 6%; }
-.forms    { top: 51%; left: 6%; }
-.practice { top: 51%; right: 6%; }
-.types    { top: 66%; left: 6%; }
-.lessons  { top: 66%; right: 6%; }
-
-/* ===== КНИГА ===== */
-.book {
-    max-width: 420px;
-    margin: 20px auto;
-    background: #fdf6e3;
-    color: black;
-    border-radius: 20px;
+.menu {
+    text-align: center;
     padding: 20px;
-    position: relative;
-    border: 8px solid gold;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
 }
 
-/* АРАБСКИЙ */
-.arabic {
-    font-family: 'Amiri', serif;
+.menu h1 {
+    font-size: 24px;
+}
+
+.menu button {
+    width: 90%;
+    padding: 15px;
+    margin: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 15px;
+    background: gold;
+    color: black;
+}
+
+/* ================= СТРАНИЦА КНИГИ ================= */
+
+.book-page {
+    background: #f5f0e6;
+    border-radius: 25px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+    border: 6px solid gold;
+    color: black;
 }
 
 /* БУКВА */
 .letter {
-    font-size: 120px;
-    margin-top: 10px;
+    font-size: 90px;
+    text-align: center;
+}
+
+/* КАЛЛИГРАФИЯ */
+.calligraphy {
+    font-size: 40px;
+    text-align: center;
+    color: #1b5e20;
 }
 
 /* НАЗВАНИЕ */
 .name {
+    font-size: 26px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.desc {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* МАХРАДЖ */
+.makhraj-box {
+    background: #ffffffaa;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.makhraj-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.makhraj-text {
+    margin-top: 10px;
+}
+
+/* СХЕМА */
+.makhraj-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    gap: 15px;
+}
+
+.mouth {
+    font-size: 40px;
+    cursor: pointer;
+    animation: pulse 1.5s infinite;
+}
+
+.air {
+    font-size: 25px;
+}
+
+.throat {
     font-size: 40px;
 }
 
-/* КНОПКА */
-.sound-btn {
-    background: #eee;
-    padding: 12px;
-    border-radius: 12px;
-    margin: 15px 0;
+/* АНИМАЦИЯ */
+@keyframes pulse {
+    0% {transform: scale(1);}
+    50% {transform: scale(1.2);}
+    100% {transform: scale(1);}
+}
+
+.hint {
+    text-align: center;
+    font-size: 12px;
 }
 
 /* ХАРАКАТЫ */
 .harakat {
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
+    justify-content: space-around;
+    margin-top: 15px;
 }
 
-.harakat button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    background: #eee;
+.h-box {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
 }
 
-.harakat span {
-    font-size: 28px;
-}
-
-.harakat small {
-    font-size: 14px;
+.arabic {
+    font-size: 24px;
 }
 
 /* НОМЕР */
-.page-number {
+.page-num {
     text-align: center;
-    margin-top: 20px;
     font-size: 22px;
+    margin-top: 10px;
 }
 
 /* НАВИГАЦИЯ */
@@ -122,116 +168,129 @@ body {
 
 .nav button {
     padding: 10px 20px;
-    border-radius: 10px;
-    border: none;
 }
+
+/* НАЗАД */
+.back {
+    display: block;
+    margin: 15px auto;
+    padding: 10px 20px;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- ===== МЕНЮ ===== -->
+<!-- ================= МЕНЮ ================= -->
+
 <div id="menu" class="page active">
-<div class="menu">
+  <div class="menu">
+    <h1>📖 Изучение таджвида</h1>
 
-<img src="menu.png">
-
-<div class="btn alphabet" onclick="openPage('alif')"></div>
-<div class="btn rules"></div>
-<div class="btn forms"></div>
-<div class="btn practice"></div>
-<div class="btn types"></div>
-<div class="btn lessons"></div>
-
-</div>
+    <button onclick="openPage('alif')">Алфавит</button>
+    <button>Правила таджвида</button>
+    <button>Видоизменение букв</button>
+    <button>Практика чтения</button>
+    <button>Виды чтения</button>
+    <button>Уроки</button>
+  </div>
 </div>
 
-<!-- ===== СТРАНИЦА АЛИФ ===== -->
+<!-- ================= АЛИФ ================= -->
+
 <div id="alif" class="page">
-<div class="book">
+  <div class="book-page">
 
-<div class="page-content">
+    <div class="letter">ا</div>
 
-<div class="letter arabic">ا</div>
+    <div class="calligraphy">ألف</div>
 
-<div class="arabic name">ألف</div>
+    <div class="name">Алиф</div>
+    <div class="desc">Первая буква арабского алфавита</div>
 
-<h2>Алиф</h2>
+    <!-- МАХРАДЖ -->
+    <div class="makhraj-box">
 
-<div class="sound-btn" onclick="playSound('ا')">
-🔊 Прослушать
+      <div class="makhraj-title">Махрадж:</div>
+
+      <div class="makhraj-text">
+        Алиф выходит из <b>пустоты рта и горла (الجوف)</b><br>
+        Звук произносится свободно,<br>
+        без сжатия языка и губ.
+      </div>
+
+      <div class="makhraj-visual">
+        <div class="mouth" onclick="playAlif()">👄</div>
+        <div class="air">➜</div>
+        <div class="throat">🫁</div>
+      </div>
+
+      <div class="hint">Нажми на рот</div>
+
+    </div>
+
+    <!-- ХАРАКАТЫ -->
+    <div class="harakat">
+      <div class="h-box" onclick="playSound('a')">
+        <div class="arabic">اَ</div>
+        <div>a</div>
+      </div>
+
+      <div class="h-box" onclick="playSound('i')">
+        <div class="arabic">اِ</div>
+        <div>i</div>
+      </div>
+
+      <div class="h-box" onclick="playSound('u')">
+        <div class="arabic">اُ</div>
+        <div>u</div>
+      </div>
+    </div>
+
+    <div class="page-num">١</div>
+
+    <div class="nav">
+      <button onclick="prevPage()">←</button>
+      <button onclick="nextPage()">→</button>
+    </div>
+
+    <button class="back" onclick="openPage('menu')">← Назад</button>
+
+  </div>
 </div>
 
-<p>Алиф — первая буква арабского алфавита</p>
-
-<h3>Харакаты:</h3>
-
-<div class="harakat">
-
-<button onclick="playSound('اَ')">
-<span class="arabic">اَ</span>
-<small>a</small>
-</button>
-
-<button onclick="playSound('اِ')">
-<span class="arabic">اِ</span>
-<small>i</small>
-</button>
-
-<button onclick="playSound('اُ')">
-<span class="arabic">اُ</span>
-<small>u</small>
-</button>
-
-</div>
-
-</div>
-
-<div class="page-number arabic">١</div>
-
-<div class="nav">
-<button onclick="prevPage()">←</button>
-<button onclick="nextPage()">→</button>
-</div>
-
-<div style="text-align:center; margin-top:15px;">
-<button onclick="openPage('menu')">← Назад</button>
-</div>
-
-</div>
-</div>
+<!-- ================= JS ================= -->
 
 <script>
+
 function openPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
 /* ЗВУК */
-function playSound(text) {
-    let msg = new SpeechSynthesisUtterance(text);
+function playAlif() {
+    let msg = new SpeechSynthesisUtterance("ا");
     msg.lang = "ar-SA";
-    msg.rate = 0.8;
-
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(msg);
+    speechSynthesis.speak(msg);
 }
 
-/* ПЕРЕЛИСТЫВАНИЕ */
-let currentPage = 1;
-let totalPages = 28;
+function playSound(vowel) {
+    let msg = new SpeechSynthesisUtterance(vowel);
+    msg.lang = "ar-SA";
+    speechSynthesis.speak(msg);
+}
 
+/* пока заглушка */
 function nextPage() {
-    if(currentPage < totalPages) {
-        alert("Следующая буква (пока не добавлена)");
-    }
+    alert("Дальше будет ب 😎");
 }
 
 function prevPage() {
-    if(currentPage > 1) {
-        alert("Предыдущая буква");
-    }
+    alert("Это первая страница");
 }
+
 </script>
 
 </body>
