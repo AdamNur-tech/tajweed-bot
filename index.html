@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tajweed App</title>
 
+<!-- Арабский шрифт -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+
 <style>
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: #0f4d3a;
 }
 
@@ -16,10 +19,10 @@ body {
 .page { display: none; }
 .active { display: block; }
 
-/* ===== МЕНЮ С КАРТИНКОЙ ===== */
+/* ===== МЕНЮ ===== */
 .menu {
     position: relative;
-    max-width: 420px;      /* важно: не растягивается */
+    max-width: 420px;
     margin: auto;
 }
 
@@ -28,15 +31,13 @@ body {
     display: block;
 }
 
-/* КНОПКИ ПОВЕРХ КАРТИНКИ */
+/* КНОПКИ НА КАРТИНКЕ */
 .btn {
     position: absolute;
     width: 40%;
     height: 11%;
-    cursor: pointer;
 }
 
-/* РАСПОЛОЖЕНИЕ КНОПОК (под твою картинку) */
 .alphabet { top: 36%; left: 6%; }
 .rules    { top: 36%; right: 6%; }
 .forms    { top: 51%; left: 6%; }
@@ -44,7 +45,7 @@ body {
 .types    { top: 66%; left: 6%; }
 .lessons  { top: 66%; right: 6%; }
 
-/* ===== СТРАНИЦА БУКВЫ ===== */
+/* ===== СТРАНИЦА ===== */
 .container {
     max-width: 420px;
     margin: auto;
@@ -53,32 +54,54 @@ body {
     color: white;
 }
 
+/* АРАБСКИЙ */
+.arabic {
+    font-family: 'Amiri', serif;
+}
+
+/* БУКВА */
 .letter {
-    font-size: 110px;
+    font-size: 140px;
     margin-top: 30px;
 }
 
+/* КНОПКА ЗВУКА */
 .sound-btn {
     background: #eee;
     color: black;
-    padding: 12px 20px;
+    padding: 14px;
     border-radius: 12px;
     margin: 15px 0;
 }
 
+/* ХАРАКАТЫ */
 .harakat {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     margin-top: 20px;
 }
 
 .harakat button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
+    background: #eee;
 }
 
+.harakat span {
+    font-size: 28px;
+}
+
+.harakat small {
+    font-size: 14px;
+    color: #333;
+}
+
+/* НАЗАД */
 .back {
     margin-top: 30px;
     background: #1f6b4d;
@@ -92,25 +115,25 @@ body {
 
 <!-- ===== МЕНЮ ===== -->
 <div id="menu" class="page active">
-    <div class="menu">
-        <!-- ВАЖНО: имя файла картинки -->
-        <img src="menu.png">
+<div class="menu">
 
-        <!-- КНОПКИ -->
-        <div class="btn alphabet" onclick="openPage('alif')"></div>
-        <div class="btn rules"></div>
-        <div class="btn forms"></div>
-        <div class="btn practice"></div>
-        <div class="btn types"></div>
-        <div class="btn lessons"></div>
-    </div>
+<img src="menu.png">
+
+<div class="btn alphabet" onclick="openPage('alif')"></div>
+<div class="btn rules"></div>
+<div class="btn forms"></div>
+<div class="btn practice"></div>
+<div class="btn types"></div>
+<div class="btn lessons"></div>
+
+</div>
 </div>
 
 <!-- ===== АЛИФ ===== -->
 <div id="alif" class="page">
 <div class="container">
 
-<div class="letter">ا</div>
+<div class="letter arabic">ا</div>
 <h2>Алиф</h2>
 
 <div class="sound-btn" onclick="playSound('ا')">
@@ -122,9 +145,22 @@ body {
 <h3>Харакаты:</h3>
 
 <div class="harakat">
-<button onclick="playSound('اَ')">А</button>
-<button onclick="playSound('اِ')">И</button>
-<button onclick="playSound('اُ')">У</button>
+
+<button onclick="playSound('اَ')">
+<span class="arabic">اَ</span>
+<small>a</small>
+</button>
+
+<button onclick="playSound('اِ')">
+<span class="arabic">اِ</span>
+<small>i</small>
+</button>
+
+<button onclick="playSound('اُ')">
+<span class="arabic">اُ</span>
+<small>u</small>
+</button>
+
 </div>
 
 <div class="back" onclick="openPage('menu')">← Назад</div>
@@ -138,10 +174,11 @@ function openPage(id) {
     document.getElementById(id).classList.add('active');
 }
 
-/* ПРОСТОЙ ЗВУК (можно потом заменить) */
 function playSound(text) {
-    const msg = new SpeechSynthesisUtterance(text);
+    let msg = new SpeechSynthesisUtterance(text);
     msg.lang = "ar-SA";
+    msg.rate = 0.8;
+
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(msg);
 }
