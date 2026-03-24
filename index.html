@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Tajweed App</title>
 
 <style>
 
-/* ===== ОБЩЕЕ ===== */
+/* ОБЩЕЕ */
 body {
     margin: 0;
-    font-family: Arial;
     background: #0f4c3a;
-    color: white;
 }
 
+/* СТРАНИЦЫ */
 .page {
     display: none;
 }
@@ -23,33 +23,9 @@ body {
     display: block;
 }
 
-/* ===== МЕНЮ ===== */
-
-.menu {
-    text-align: center;
-    padding: 20px;
-}
-
-.menu h1 {
-    font-size: 24px;
-}
-
-.menu button {
-    width: 90%;
-    padding: 15px;
-    margin: 10px;
-    font-size: 18px;
-    border: none;
-    border-radius: 20px;
-    background: gold;
-    color: black;
-}
-
-/* ===== СТРАНИЦА С КАРТИНКОЙ ===== */
-
-.image-container {
+/* КАРТИНКА */
+.container {
     position: relative;
-    width: 100%;
     max-width: 420px;
     margin: auto;
 }
@@ -64,7 +40,28 @@ body {
     position: absolute;
 }
 
-/* 👄 РОТ */
+/* ===== МЕНЮ КНОПКИ (ПО КАРТИНКЕ) ===== */
+
+.btn1 { top: 42%; left: 8%; width: 38%; height: 12%; }
+.btn2 { top: 42%; right: 8%; width: 38%; height: 12%; }
+
+.btn3 { top: 57%; left: 8%; width: 38%; height: 12%; }
+.btn4 { top: 57%; right: 8%; width: 38%; height: 12%; }
+
+.btn5 { top: 72%; left: 8%; width: 38%; height: 12%; }
+.btn6 { top: 72%; right: 8%; width: 38%; height: 12%; }
+
+/* НАЗАД */
+.backMenu {
+    bottom: 5%;
+    left: 25%;
+    width: 50%;
+    height: 10%;
+}
+
+/* ===== АЛИФ ===== */
+
+/* РОТ */
 .mouth {
     top: 58%;
     left: 58%;
@@ -73,127 +70,91 @@ body {
 }
 
 /* ХАРАКАТЫ */
-.a {
-    top: 63%;
-    left: 20%;
-    width: 50px;
-    height: 70px;
-}
-
-.i {
-    top: 63%;
-    left: 40%;
-    width: 50px;
-    height: 70px;
-}
-
-.u {
-    top: 63%;
-    left: 60%;
-    width: 50px;
-    height: 70px;
-}
+.a { top: 64%; left: 20%; width: 60px; height: 80px; }
+.i { top: 64%; left: 42%; width: 60px; height: 80px; }
+.u { top: 64%; left: 64%; width: 60px; height: 80px; }
 
 /* СТРЕЛКИ */
-.prev {
-    bottom: 12%;
-    left: 10%;
-    width: 70px;
-    height: 50px;
-}
-
-.next {
-    bottom: 12%;
-    right: 10%;
-    width: 70px;
-    height: 50px;
-}
+.prev { bottom: 12%; left: 10%; width: 70px; height: 50px; }
+.next { bottom: 12%; right: 10%; width: 70px; height: 50px; }
 
 /* НАЗАД */
-.back {
-    bottom: 3%;
-    left: 30%;
-    width: 150px;
-    height: 50px;
-}
+.back { bottom: 3%; left: 30%; width: 150px; height: 50px; }
 
 </style>
 </head>
 
 <body>
 
-<!-- ===== МЕНЮ ===== -->
-
+<!-- ===== МЕНЮ (ТВОЯ КАРТИНКА) ===== -->
 <div id="menu" class="page active">
-  <div class="menu">
-    <h1>📖 Изучение таджвида</h1>
+  <div class="container">
+    <img src="menu.png" class="bg">
 
-    <button onclick="openPage('alif')">Алфавит</button>
-    <button>Правила таджвида</button>
-    <button>Видоизменение букв</button>
-    <button>Практика чтения</button>
-    <button>Виды чтения</button>
-    <button>Уроки</button>
+    <!-- КНОПКИ -->
+    <div class="click btn1" onclick="openPage('alif')"></div>
+    <div class="click btn2"></div>
+
+    <div class="click btn3"></div>
+    <div class="click btn4"></div>
+
+    <div class="click btn5"></div>
+    <div class="click btn6"></div>
+
+    <!-- НАЗАД -->
+    <div class="click backMenu"></div>
   </div>
 </div>
 
 <!-- ===== АЛИФ ===== -->
-
 <div id="alif" class="page">
-
-  <div class="image-container">
-
-    <!-- ВАША КАРТИНКА -->
+  <div class="container">
     <img src="alif.png" class="bg">
 
-    <!-- 👄 РОТ -->
+    <!-- МАХРАДЖ -->
     <div class="click mouth" onclick="playAlif()"></div>
 
     <!-- ХАРАКАТЫ -->
-    <div class="click a" onclick="playSound('a')"></div>
-    <div class="click i" onclick="playSound('i')"></div>
-    <div class="click u" onclick="playSound('u')"></div>
+    <div class="click a" onclick="playA()"></div>
+    <div class="click i" onclick="playI()"></div>
+    <div class="click u" onclick="playU()"></div>
 
     <!-- СТРЕЛКИ -->
-    <div class="click prev" onclick="prevPage()"></div>
-    <div class="click next" onclick="nextPage()"></div>
+    <div class="click prev"></div>
+    <div class="click next"></div>
 
     <!-- НАЗАД -->
     <div class="click back" onclick="openPage('menu')"></div>
 
   </div>
-
 </div>
-
-<!-- ===== JS ===== -->
 
 <script>
 
+/* ПЕРЕКЛЮЧЕНИЕ */
 function openPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
-/* ЗВУК */
+/* ===== ПРАВИЛЬНЫЕ ЗВУКИ ===== */
+
+/* АЛИФ */
 function playAlif() {
-    let msg = new SpeechSynthesisUtterance("ا");
-    msg.lang = "ar-SA";
-    speechSynthesis.speak(msg);
+    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3").play();
 }
 
-function playSound(vowel) {
-    let msg = new SpeechSynthesisUtterance(vowel);
-    msg.lang = "ar-SA";
-    speechSynthesis.speak(msg);
+/* ХАРАКАТЫ (ВАЖНО — НЕ ЛАТИНИЦА!) */
+function playA() {
+    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3").play();
 }
 
-/* НАВИГАЦИЯ */
-function nextPage() {
-    alert("Дальше будет ب 😎");
+function playI() {
+    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/2.mp3").play();
 }
 
-function prevPage() {
-    alert("Это первая страница");
+function playU() {
+    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/3.mp3").play();
 }
 
 </script>
