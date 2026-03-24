@@ -102,8 +102,40 @@ html, body {
 <!-- ЭКРАНЫ -->
 
 <div id="alphabet" class="screen">
-    <h2>Алфавит</h2>
-    <button onclick="goBack()">⬅ Назад</button>
+
+<div style="max-width:400px; margin:auto;">
+
+    <!-- БУКВА -->
+    <div style="font-size:80px; margin-top:20px;">ا</div>
+
+    <!-- НАЗВАНИЕ -->
+    <h2>Алиф</h2>
+
+    <!-- ЗВУК -->
+    <p>📢 Звук: "А"</p>
+
+    <!-- КНОПКА -->
+    <button onclick="playSound()">🔊 Прослушать</button>
+
+    <!-- ОПИСАНИЕ -->
+    <p>
+        Алиф — первая буква арабского алфавита.
+    </p>
+
+    <!-- ХАРАКАТЫ -->
+    <h3>Харакаты:</h3>
+    <p style="font-size:30px;">
+        اَ  اِ  اُ
+    </p>
+
+    <!-- КНОПКИ -->
+    <div style="margin-top:20px;">
+        <button onclick="goBack()">⬅ Назад</button>
+        <button onclick="nextLetter()">➡ Далее</button>
+    </div>
+
+</div>
+
 </div>
 
 <div id="rules" class="screen">
@@ -140,6 +172,14 @@ function openModule(module) {
 function goBack() {
     document.querySelectorAll(".screen").forEach(el => el.style.display = "none");
     document.getElementById("main").style.display = "block";
+}
+
+function playSound() {
+    let speech = new SpeechSynthesisUtterance("أَ");
+    speech.lang = "ar-SA";
+    speech.rate = 0.7;
+    speechSynthesis.speak(speech);
+
 }
 </script>
 
