@@ -6,10 +6,11 @@
 <title>Tajweed App</title>
 
 <style>
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    background: #0f3b2e;
     font-family: Arial;
-    background: black;
 }
 
 /* ЭКРАНЫ */
@@ -22,7 +23,7 @@ body {
     position: relative;
 }
 
-/* КАРТИНКА */
+/* КАРТИНКА МЕНЮ */
 .bg {
     width: 100%;
     height: auto;
@@ -48,7 +49,7 @@ button {
     padding: 12px;
     margin: 6px;
     font-size: 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
 }
 
@@ -73,18 +74,18 @@ button {
 
 <img src="menu.png" class="bg">
 
-<!-- НЕВИДИМЫЕ КНОПКИ (подгонка под картинку) -->
-<button onclick="openModule('alphabet')" style="position:absolute; top:38%; left:5%; width:40%; height:12%; opacity:0;"></button>
+<!-- НЕВИДИМЫЕ КНОПКИ -->
+<button onclick="openModule('alphabet')" style="position:absolute; top:37%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('rules')" style="position:absolute; top:38%; right:5%; width:40%; height:12%; opacity:0;"></button>
+<button onclick="openModule('rules')" style="position:absolute; top:37%; right:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('forms')" style="position:absolute; top:53%; left:5%; width:40%; height:12%; opacity:0;"></button>
+<button onclick="openModule('forms')" style="position:absolute; top:52%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('practice')" style="position:absolute; top:53%; right:5%; width:40%; height:12%; opacity:0;"></button>
+<button onclick="openModule('practice')" style="position:absolute; top:52%; right:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('qiraat')" style="position:absolute; top:68%; left:5%; width:40%; height:10%; opacity:0;"></button>
+<button onclick="openModule('qiraat')" style="position:absolute; top:67%; left:5%; width:40%; height:10%; opacity:0;"></button>
 
-<button onclick="openModule('lessons')" style="position:absolute; top:68%; right:5%; width:40%; height:10%; opacity:0;"></button>
+<button onclick="openModule('lessons')" style="position:absolute; top:67%; right:5%; width:40%; height:10%; opacity:0;"></button>
 
 </div>
 
@@ -103,8 +104,6 @@ button {
 
 <h3>Харакаты:</h3>
 
-<br>
-
 <button onclick="playFatha()">أَ</button>
 <button onclick="playKasra()">إِ</button>
 <button onclick="playDamma()">أُ</button>
@@ -115,7 +114,7 @@ button {
 
 </div>
 
-<!-- ДРУГИЕ ЭКРАНЫ -->
+<!-- ЭКРАНЫ -->
 <div id="rules" class="screen alphabet">
 <h2>Правила таджвида</h2>
 <button class="back-btn" onclick="goBack()">← Назад</button>
@@ -141,9 +140,9 @@ button {
 <button class="back-btn" onclick="goBack()">← Назад</button>
 </div>
 
-<!-- JS -->
 <script>
 
+/* НАВИГАЦИЯ */
 function openModule(module) {
     document.getElementById("main").style.display = "none";
 
@@ -162,7 +161,19 @@ function goBack() {
     document.getElementById("main").style.display = "block";
 }
 
-/* ЗВУК (ИСПРАВЛЕННЫЙ) */
+/* РАЗБЛОКИРОВКА ЗВУКА */
+let unlocked = false;
+
+document.addEventListener("click", () => {
+    if (!unlocked) {
+        let s = new SpeechSynthesisUtterance("a");
+        speechSynthesis.speak(s);
+        speechSynthesis.cancel();
+        unlocked = true;
+    }
+});
+
+/* ЗВУКИ */
 function playSound() {
     speechSynthesis.cancel();
 
@@ -170,7 +181,7 @@ function playSound() {
     s.lang = "ar-SA";
     s.rate = 0.8;
 
-    window.speechSynthesis.speak(s);
+    speechSynthesis.speak(s);
 }
 
 function playFatha() {
