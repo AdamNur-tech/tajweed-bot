@@ -8,35 +8,51 @@
 <style>
 body {
     margin: 0;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background: #0f4d3a;
-    color: white;
-}
-
-/* ===== КОНТЕЙНЕР ===== */
-.container {
-    max-width: 420px;
-    margin: auto;
-    padding: 20px;
-    text-align: center;
 }
 
 /* ===== СТРАНИЦЫ ===== */
 .page { display: none; }
 .active { display: block; }
 
-/* ===== МЕНЮ ===== */
-.menu-btn {
-    background: gold;
-    color: black;
-    padding: 18px;
-    margin: 12px 0;
-    border-radius: 20px;
-    font-size: 18px;
-    font-weight: bold;
+/* ===== МЕНЮ С КАРТИНКОЙ ===== */
+.menu {
+    position: relative;
+    max-width: 420px;      /* важно: не растягивается */
+    margin: auto;
 }
 
-/* ===== АЛИФ ===== */
+.menu img {
+    width: 100%;
+    display: block;
+}
+
+/* КНОПКИ ПОВЕРХ КАРТИНКИ */
+.btn {
+    position: absolute;
+    width: 40%;
+    height: 11%;
+    cursor: pointer;
+}
+
+/* РАСПОЛОЖЕНИЕ КНОПОК (под твою картинку) */
+.alphabet { top: 36%; left: 6%; }
+.rules    { top: 36%; right: 6%; }
+.forms    { top: 51%; left: 6%; }
+.practice { top: 51%; right: 6%; }
+.types    { top: 66%; left: 6%; }
+.lessons  { top: 66%; right: 6%; }
+
+/* ===== СТРАНИЦА БУКВЫ ===== */
+.container {
+    max-width: 420px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
 .letter {
     font-size: 110px;
     margin-top: 30px;
@@ -50,7 +66,6 @@ body {
     margin: 15px 0;
 }
 
-/* ===== ХАРАКАТЫ ===== */
 .harakat {
     display: flex;
     justify-content: center;
@@ -64,7 +79,6 @@ body {
     border: none;
 }
 
-/* ===== НАЗАД ===== */
 .back {
     margin-top: 30px;
     background: #1f6b4d;
@@ -78,18 +92,18 @@ body {
 
 <!-- ===== МЕНЮ ===== -->
 <div id="menu" class="page active">
-<div class="container">
+    <div class="menu">
+        <!-- ВАЖНО: имя файла картинки -->
+        <img src="menu.png">
 
-<h2>📖 Изучение таджвида</h2>
-
-<div class="menu-btn" onclick="openPage('alif')">Алфавит</div>
-<div class="menu-btn">Правила таджвида</div>
-<div class="menu-btn">Видоизменение букв</div>
-<div class="menu-btn">Практика чтения</div>
-<div class="menu-btn">Виды чтения</div>
-<div class="menu-btn">Уроки</div>
-
-</div>
+        <!-- КНОПКИ -->
+        <div class="btn alphabet" onclick="openPage('alif')"></div>
+        <div class="btn rules"></div>
+        <div class="btn forms"></div>
+        <div class="btn practice"></div>
+        <div class="btn types"></div>
+        <div class="btn lessons"></div>
+    </div>
 </div>
 
 <!-- ===== АЛИФ ===== -->
@@ -99,9 +113,7 @@ body {
 <div class="letter">ا</div>
 <h2>Алиф</h2>
 
-<div>🔊 Звук: А</div>
-
-<div class="sound-btn" onclick="play('a')">
+<div class="sound-btn" onclick="playSound('ا')">
 🔊 Прослушать
 </div>
 
@@ -110,9 +122,9 @@ body {
 <h3>Харакаты:</h3>
 
 <div class="harakat">
-<button onclick="play('a')">А</button>
-<button onclick="play('i')">И</button>
-<button onclick="play('u')">У</button>
+<button onclick="playSound('اَ')">А</button>
+<button onclick="playSound('اِ')">И</button>
+<button onclick="playSound('اُ')">У</button>
 </div>
 
 <div class="back" onclick="openPage('menu')">← Назад</div>
@@ -126,21 +138,12 @@ function openPage(id) {
     document.getElementById(id).classList.add('active');
 }
 
-/* ===== ЗВУК (100% РАБОТАЕТ) ===== */
-function play(type) {
-    let audio;
-
-    if(type === 'a') {
-        audio = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
-    }
-    if(type === 'i') {
-        audio = new Audio('https://www.soundjay.com/buttons/sounds/button-4.mp3');
-    }
-    if(type === 'u') {
-        audio = new Audio('https://www.soundjay.com/buttons/sounds/button-5.mp3');
-    }
-
-    audio.play();
+/* ПРОСТОЙ ЗВУК (можно потом заменить) */
+function playSound(text) {
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.lang = "ar-SA";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(msg);
 }
 </script>
 
