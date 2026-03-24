@@ -139,35 +139,20 @@ function openPage(id) {
 
 /* ===== ПРАВИЛЬНЫЕ ЗВУКИ ===== */
 
-function speak(text) {
-    let msg = new SpeechSynthesisUtterance(text);
-    msg.lang = "ar-SA";
-    msg.rate = 0.6;
-
-    // ВАЖНО: ждём пока движок готов
-    window.speechSynthesis.cancel();
-
-    setTimeout(() => {
-        window.speechSynthesis.speak(msg);
-    }, 100);
-}
-
-/* АЛИФ */
 function playAlif() {
-    speak("ا");
+    new Audio("sounds/alif.mp3").play();
 }
 
-/* ХАРАКАТЫ */
 function playA() {
-    speak("اَ");
+    new Audio("sounds/alif_a.mp3").play();
 }
 
 function playI() {
-    speak("اِ");
+    new Audio("sounds/alif_i.mp3").play();
 }
 
 function playU() {
-    speak("اُ");
+    new Audio("sounds/alif_u.mp3").play();
 }
 
 </script>
