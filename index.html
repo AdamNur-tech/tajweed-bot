@@ -139,22 +139,42 @@ function openPage(id) {
 
 /* ===== ПРАВИЛЬНЫЕ ЗВУКИ ===== */
 
-/* АЛИФ */
+/* ===== ЗВУКИ АЛИФ (БЕЗ СУР!) ===== */
+
 function playAlif() {
-    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3").play();
+    let msg = new SpeechSynthesisUtterance("ا");
+    msg.lang = "ar-SA";
+    msg.rate = 0.5;
+    msg.pitch = 1;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
 }
 
-/* ХАРАКАТЫ (ВАЖНО — НЕ ЛАТИНИЦА!) */
+/* ФАТХА (a) */
 function playA() {
-    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3").play();
+    let msg = new SpeechSynthesisUtterance("اَ");
+    msg.lang = "ar-SA";
+    msg.rate = 0.5;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
 }
 
+/* КАСРА (i) */
 function playI() {
-    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/2.mp3").play();
+    let msg = new SpeechSynthesisUtterance("اِ");
+    msg.lang = "ar-SA";
+    msg.rate = 0.5;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
 }
 
+/* ДАММА (u) */
 function playU() {
-    new Audio("https://cdn.islamic.network/quran/audio/128/ar.alafasy/3.mp3").play();
+    let msg = new SpeechSynthesisUtterance("اُ");
+    msg.lang = "ar-SA";
+    msg.rate = 0.5;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
 }
 
 </script>
