@@ -8,51 +8,55 @@
 <style>
 body {
     margin: 0;
+    background: black;
     font-family: Arial;
-    background: #0f3b2e;
-    color: white;
-    text-align: center;
 }
 
 .screen {
     display: none;
-    padding: 20px;
 }
 
 #main {
     display: block;
 }
 
-/* КНОПКИ */
-.btn {
-    display: block;
-    width: 90%;
-    margin: 10px auto;
-    padding: 15px;
-    font-size: 18px;
-    border-radius: 12px;
-    border: none;
-    background: gold;
-    color: black;
-    font-weight: bold;
+/* КАРТИНКА МЕНЮ */
+.bg {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
 }
 
-/* КНОПКИ НАЗАД */
-.back {
+/* КНОПКА НАЗАД */
+.back-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 30px;
     background: #1f5c45;
     color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
 }
 
-/* БУКВА */
+/* АЛФАВИТ */
+.alphabet {
+    background: #0f3b2e;
+    color: white;
+    height: 100vh;
+    text-align: center;
+    padding-top: 40px;
+}
+
 .letter {
-    font-size: 80px;
-    margin: 20px 0;
+    font-size: 90px;
 }
 
-/* КНОПКИ ЗВУКА */
-.sound-btn {
+button {
+    padding: 12px;
     margin: 5px;
-    padding: 10px;
     font-size: 16px;
 }
 </style>
@@ -63,74 +67,120 @@ body {
 <!-- ГЛАВНОЕ МЕНЮ -->
 <div id="main">
 
-<h2>📖 Изучение таджвида</h2>
+<img src="menu.png" class="bg">
 
-<button class="btn" onclick="openModule('alphabet')">Алфавит</button>
+<!-- НЕВИДИМЫЕ КНОПКИ -->
+<button onclick="openModule('alphabet')" style="position:absolute; top:40%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button class="btn" onclick="openModule('rules')">Правила таджвида</button>
+<button onclick="openModule('rules')" style="position:absolute; top:40%; right:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button class="btn" onclick="openModule('forms')">Видоизменение букв</button>
+<button onclick="openModule('forms')" style="position:absolute; top:55%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button class="btn" onclick="openModule('practice')">Практика чтения</button>
+<button onclick="openModule('practice')" style="position:absolute; top:55%; right:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button class="btn" onclick="openModule('qiraat')">Виды чтения</button>
+<button onclick="openModule('qiraat')" style="position:absolute; top:70%; left:5%; width:40%; height:10%; opacity:0;"></button>
 
-<button class="btn" onclick="openModule('lessons')">Уроки</button>
+<button onclick="openModule('lessons')" style="position:absolute; top:70%; right:5%; width:40%; height:10%; opacity:0;"></button>
 
 </div>
 
 <!-- АЛФАВИТ -->
-<div id="alphabet" class="screen">
-
-<h2>Алфавит</h2>
+<div id="alphabet" class="screen alphabet">
 
 <div class="letter" onclick="playSound()">ا</div>
 
-<h3>Алиф</h3>
+<h2>Алиф</h2>
 
 <p>🔊 Звук: А</p>
 
-<button class="sound-btn" onclick="playSound()">🔊 Прослушать</button>
+<button onclick="playSound()">🔊 Прослушать</button>
 
 <p>Алиф — первая буква арабского алфавита</p>
 
 <h3>Харакаты:</h3>
 
-<button class="sound-btn" onclick="playFatha()">َ А</button>
-<button class="sound-btn" onclick="playKasra()">ِ И</button>
-<button class="sound-btn" onclick="playDamma()">ُ У</button>
+<button onclick="playFatha()">َ А</button>
+<button onclick="playKasra()">ِ И</button>
+<button onclick="playDamma()">ُ У</button>
 
-<br><br>
-
-<button class="btn back" onclick="goBack()">← Назад</button>
+<button class="back-btn" onclick="goBack()">← Назад</button>
 
 </div>
 
 <!-- ДРУГИЕ ЭКРАНЫ -->
-<div id="rules" class="screen">
+<div id="rules" class="screen alphabet">
 <h2>Правила таджвида</h2>
-<button class="btn back" onclick="goBack()">← Назад</button>
+<button class="back-btn" onclick="goBack()">← Назад</button>
 </div>
 
-<div id="forms" class="screen">
+<div id="forms" class="screen alphabet">
 <h2>Видоизменение букв</h2>
-<button class="btn back" onclick="goBack()">← Назад</button>
+<button class="back-btn" onclick="goBack()">← Назад</button>
 </div>
 
-<div id="practice" class="screen">
+<div id="practice" class="screen alphabet">
 <h2>Практика чтения</h2>
-<button class="btn back" onclick="goBack()">← Назад</button>
+<button class="back-btn" onclick="goBack()">← Назад</button>
 </div>
 
-<div id="qiraat" class="screen">
+<div id="qiraat" class="screen alphabet">
 <h2>Виды чтения</h2>
-<button class="btn back" onclick="goBack()">← Назад</button>
+<button class="back-btn" onclick="goBack()">← Назад</button>
 </div>
 
-<div id="lessons" class="screen">
+<div id="lessons" class="screen alphabet">
 <h2>Уроки</h2>
-<button class="btn back" onclick="goBack()">← Назад</button>
+<button class="back-btn" onclick="goBack()">← Назад</button>
 </div>
 
 <!-- JS -->
 <script>
+
+function openModule(module) {
+    document.getElementById("main").style.display = "none";
+
+    document.querySelectorAll(".screen").forEach(el => {
+        el.style.display = "none";
+    });
+
+    document.getElementById(module).style.display = "block";
+}
+
+function goBack() {
+    document.querySelectorAll(".screen").forEach(el => {
+        el.style.display = "none";
+    });
+
+    document.getElementById("main").style.display = "block";
+}
+
+/* ЗВУК */
+function playSound() {
+    let s = new SpeechSynthesisUtterance("أَ");
+    s.lang = "ar-SA";
+    s.rate = 0.7;
+    speechSynthesis.speak(s);
+}
+
+function playFatha() {
+    let s = new SpeechSynthesisUtterance("أَ");
+    s.lang = "ar-SA";
+    speechSynthesis.speak(s);
+}
+
+function playKasra() {
+    let s = new SpeechSynthesisUtterance("إِ");
+    s.lang = "ar-SA";
+    speechSynthesis.speak(s);
+}
+
+function playDamma() {
+    let s = new SpeechSynthesisUtterance("أُ");
+    s.lang = "ar-SA";
+    speechSynthesis.speak(s);
+}
+
+</script>
+
+</body>
+</html>
