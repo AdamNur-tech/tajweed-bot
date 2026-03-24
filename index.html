@@ -8,56 +8,60 @@
 <style>
 body {
     margin: 0;
-    background: black;
     font-family: Arial;
+    background: black;
 }
 
+/* ЭКРАНЫ */
 .screen {
     display: none;
 }
 
 #main {
     display: block;
+    position: relative;
 }
 
-/* КАРТИНКА МЕНЮ */
+/* КАРТИНКА */
 .bg {
     width: 100%;
-    height: 100vh;
-    object-fit: cover;
-}
-
-/* КНОПКА НАЗАД */
-.back-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 30px;
-    background: #1f5c45;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
+    height: auto;
+    display: block;
 }
 
 /* АЛФАВИТ */
 .alphabet {
     background: #0f3b2e;
     color: white;
-    height: 100vh;
+    min-height: 100vh;
     text-align: center;
-    padding-top: 40px;
+    padding: 20px;
 }
 
 .letter {
     font-size: 90px;
+    margin-top: 20px;
 }
 
+/* КНОПКИ */
 button {
     padding: 12px;
-    margin: 5px;
+    margin: 6px;
     font-size: 16px;
+    border-radius: 10px;
+    border: none;
+}
+
+.sound-btn {
+    background: white;
+}
+
+.back-btn {
+    margin-top: 30px;
+    background: #1f5c45;
+    color: white;
+    width: 80%;
+    font-size: 18px;
 }
 </style>
 
@@ -69,18 +73,18 @@ button {
 
 <img src="menu.png" class="bg">
 
-<!-- НЕВИДИМЫЕ КНОПКИ -->
-<button onclick="openModule('alphabet')" style="position:absolute; top:40%; left:5%; width:40%; height:12%; opacity:0;"></button>
+<!-- НЕВИДИМЫЕ КНОПКИ (подгонка под картинку) -->
+<button onclick="openModule('alphabet')" style="position:absolute; top:38%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('rules')" style="position:absolute; top:40%; right:5%; width:40%; height:12%; opacity:0;"></button>
+<button onclick="openModule('rules')" style="position:absolute; top:38%; right:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('forms')" style="position:absolute; top:55%; left:5%; width:40%; height:12%; opacity:0;"></button>
+<button onclick="openModule('forms')" style="position:absolute; top:53%; left:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('practice')" style="position:absolute; top:55%; right:5%; width:40%; height:12%; opacity:0;"></button>
+<button onclick="openModule('practice')" style="position:absolute; top:53%; right:5%; width:40%; height:12%; opacity:0;"></button>
 
-<button onclick="openModule('qiraat')" style="position:absolute; top:70%; left:5%; width:40%; height:10%; opacity:0;"></button>
+<button onclick="openModule('qiraat')" style="position:absolute; top:68%; left:5%; width:40%; height:10%; opacity:0;"></button>
 
-<button onclick="openModule('lessons')" style="position:absolute; top:70%; right:5%; width:40%; height:10%; opacity:0;"></button>
+<button onclick="openModule('lessons')" style="position:absolute; top:68%; right:5%; width:40%; height:10%; opacity:0;"></button>
 
 </div>
 
@@ -93,15 +97,19 @@ button {
 
 <p>🔊 Звук: А</p>
 
-<button onclick="playSound()">🔊 Прослушать</button>
+<button class="sound-btn" onclick="playSound()">🔊 Прослушать</button>
 
 <p>Алиф — первая буква арабского алфавита</p>
 
 <h3>Харакаты:</h3>
 
-<button onclick="playFatha()">َ А</button>
-<button onclick="playKasra()">ِ И</button>
-<button onclick="playDamma()">ُ У</button>
+<br>
+
+<button onclick="playFatha()">أَ</button>
+<button onclick="playKasra()">إِ</button>
+<button onclick="playDamma()">أُ</button>
+
+<br>
 
 <button class="back-btn" onclick="goBack()">← Назад</button>
 
@@ -154,27 +162,33 @@ function goBack() {
     document.getElementById("main").style.display = "block";
 }
 
-/* ЗВУК */
+/* ЗВУК (ИСПРАВЛЕННЫЙ) */
 function playSound() {
+    speechSynthesis.cancel();
+
     let s = new SpeechSynthesisUtterance("أَ");
     s.lang = "ar-SA";
-    s.rate = 0.7;
-    speechSynthesis.speak(s);
+    s.rate = 0.8;
+
+    window.speechSynthesis.speak(s);
 }
 
 function playFatha() {
+    speechSynthesis.cancel();
     let s = new SpeechSynthesisUtterance("أَ");
     s.lang = "ar-SA";
     speechSynthesis.speak(s);
 }
 
 function playKasra() {
+    speechSynthesis.cancel();
     let s = new SpeechSynthesisUtterance("إِ");
     s.lang = "ar-SA";
     speechSynthesis.speak(s);
 }
 
 function playDamma() {
+    speechSynthesis.cancel();
     let s = new SpeechSynthesisUtterance("أُ");
     s.lang = "ar-SA";
     speechSynthesis.speak(s);
