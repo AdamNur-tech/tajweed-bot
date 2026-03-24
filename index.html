@@ -4,144 +4,80 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Telegram WebApp -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<title>TajweedPro</title>
+<title>Tajweed</title>
 
 <style>
-
 body {
     margin: 0;
-    background: #e6d3a3;
-    font-family: sans-serif;
+    background: black;
 }
 
-/* ФОН С УЗОРОМ */
-.wrapper {
+/* контейнер */
+.container {
+    position: relative;
+    width: 100%;
     max-width: 420px;
     margin: auto;
-    padding: 10px;
-
-    background:
-    url("https://www.transparenttextures.com/patterns/arabesque.png"),
-    #e6d3a3;
 }
 
-/* ЗАГОЛОВОК */
-.header {
-    background: linear-gradient(#1e4b3a,#123126);
-    border-radius: 40px;
-    padding: 18px;
-    text-align: center;
-    color: gold;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* СЕТКА */
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-/* КАРТОЧКИ = КАРТИНКИ */
-.card img {
+/* картинка */
+.bg {
     width: 100%;
-    border-radius: 18px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    display: block;
 }
 
-/* НИЖНИЕ */
-.bottom {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+/* кнопки */
+.btn {
+    position: absolute;
+    background: transparent;
+    border: none;
 }
 
-.bottom img {
-    width: 50%;
-    border-radius: 12px;
-}
+/* === РАСПОЛОЖЕНИЕ === */
 
-/* ХАДИС */
-.hadith {
-    text-align: center;
-    margin-top: 20px;
-}
+/* 1 ряд */
+.btn1 { top: 36%; left: 6%; width: 40%; height: 11%; }
+.btn2 { top: 36%; right: 6%; width: 40%; height: 11%; }
 
-.hadith-ar {
-    color: #b38b2d;
-    font-size: 16px;
-}
+/* 2 ряд */
+.btn3 { top: 50%; left: 6%; width: 40%; height: 11%; }
+.btn4 { top: 50%; right: 6%; width: 40%; height: 11%; }
 
-.hadith-ru {
-    font-size: 14px;
-}
+/* 3 ряд */
+.btn5 { top: 64%; left: 6%; width: 40%; height: 9%; }
+.btn6 { top: 64%; right: 6%; width: 40%; height: 9%; }
 
-/* НАЗАД */
+/* назад */
 .back {
-    margin-top: 15px;
-    padding: 14px;
-    border-radius: 20px;
-    background: linear-gradient(#2f5a45,#1c3a2d);
-    color: white;
-    text-align: center;
-    font-weight: bold;
+    top: 84%;
+    left: 10%;
+    width: 80%;
+    height: 8%;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="container">
 
-<div class="header">
-📖 Изучение Таджвида
-</div>
+    <!-- ТВОЯ КАРТИНКА -->
+    <img src="menu.png" class="bg">
 
-<div class="grid">
+    <!-- КНОПКИ -->
+    <button class="btn btn1" onclick="openModule('alphabet')"></button>
+    <button class="btn btn2" onclick="openModule('rules')"></button>
 
-<div class="card" onclick="openModule('alphabet')">
-<img src="https://i.imgur.com/3QZ7Z7b.png">
-</div>
+    <button class="btn btn3" onclick="openModule('forms')"></button>
+    <button class="btn btn4" onclick="openModule('practice')"></button>
 
-<div class="card" onclick="openModule('tajweed')">
-<img src="https://i.imgur.com/2b9Yy7L.png">
-</div>
+    <button class="btn btn5" onclick="openModule('qiraat')"></button>
+    <button class="btn btn6" onclick="openModule('lessons')"></button>
 
-<div class="card" onclick="openModule('forms')">
-<img src="https://i.imgur.com/Y7b9K3D.png">
-</div>
-
-<div class="card" onclick="openModule('practice')">
-<img src="https://i.imgur.com/4Zp7m5S.png">
-</div>
-
-</div>
-
-<div class="bottom">
-
-<img src="https://i.imgur.com/vK6pF8x.png">
-<img src="https://i.imgur.com/jL9F4Vd.png">
-
-</div>
-
-<div class="hadith">
-
-<div class="hadith-ar">
-خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ
-</div>
-
-<div class="hadith-ru">
-Лучший из вас тот, кто изучает Коран и обучает ему
-</div>
-
-</div>
-
-<div class="back" onclick="goBack()">⬅️ Назад</div>
+    <button class="btn back" onclick="goBack()"></button>
 
 </div>
 
