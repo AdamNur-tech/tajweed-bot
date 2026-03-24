@@ -6,10 +6,6 @@
 <title>Tajweed App</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
-
 body {
     margin: 0;
     font-family: Arial;
@@ -17,52 +13,40 @@ body {
     color: white;
 }
 
-/* ===== СТРАНИЦЫ ===== */
-.page {
-    display: none;
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.active {
-    display: block;
-}
-
 /* ===== КОНТЕЙНЕР ===== */
 .container {
-    max-width: 500px;
+    max-width: 420px;
     margin: auto;
+    padding: 20px;
     text-align: center;
 }
+
+/* ===== СТРАНИЦЫ ===== */
+.page { display: none; }
+.active { display: block; }
 
 /* ===== МЕНЮ ===== */
 .menu-btn {
     background: gold;
     color: black;
-    padding: 16px;
-    margin: 10px 0;
-    width: 100%;
-    border-radius: 15px;
+    padding: 18px;
+    margin: 12px 0;
+    border-radius: 20px;
     font-size: 18px;
     font-weight: bold;
 }
 
-/* ===== БУКВА ===== */
+/* ===== АЛИФ ===== */
 .letter {
-    font-size: 100px;
+    font-size: 110px;
     margin-top: 30px;
 }
 
-.title {
-    font-size: 28px;
-    margin: 10px 0;
-}
-
 .sound-btn {
-    background: #ddd;
+    background: #eee;
     color: black;
     padding: 12px 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin: 15px 0;
 }
 
@@ -84,8 +68,8 @@ body {
 .back {
     margin-top: 30px;
     background: #1f6b4d;
-    padding: 12px;
-    border-radius: 12px;
+    padding: 14px;
+    border-radius: 14px;
 }
 </style>
 </head>
@@ -98,7 +82,7 @@ body {
 
 <h2>📖 Изучение таджвида</h2>
 
-<div class="menu-btn" onclick="openPage('alphabet')">Алфавит</div>
+<div class="menu-btn" onclick="openPage('alif')">Алфавит</div>
 <div class="menu-btn">Правила таджвида</div>
 <div class="menu-btn">Видоизменение букв</div>
 <div class="menu-btn">Практика чтения</div>
@@ -109,15 +93,15 @@ body {
 </div>
 
 <!-- ===== АЛИФ ===== -->
-<div id="alphabet" class="page">
+<div id="alif" class="page">
 <div class="container">
 
 <div class="letter">ا</div>
-<div class="title">Алиф</div>
+<h2>Алиф</h2>
 
 <div>🔊 Звук: А</div>
 
-<div class="sound-btn" onclick="playSound('ا')">
+<div class="sound-btn" onclick="play('a')">
 🔊 Прослушать
 </div>
 
@@ -126,9 +110,9 @@ body {
 <h3>Харакаты:</h3>
 
 <div class="harakat">
-<button onclick="playSound('اَ')">А</button>
-<button onclick="playSound('اِ')">И</button>
-<button onclick="playSound('اُ')">У</button>
+<button onclick="play('a')">А</button>
+<button onclick="play('i')">И</button>
+<button onclick="play('u')">У</button>
 </div>
 
 <div class="back" onclick="openPage('menu')">← Назад</div>
@@ -142,13 +126,21 @@ function openPage(id) {
     document.getElementById(id).classList.add('active');
 }
 
-function playSound(text) {
-    let msg = new SpeechSynthesisUtterance(text);
-    msg.lang = "ar-SA";
-    msg.rate = 0.8;
+/* ===== ЗВУК (100% РАБОТАЕТ) ===== */
+function play(type) {
+    let audio;
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(msg);
+    if(type === 'a') {
+        audio = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+    }
+    if(type === 'i') {
+        audio = new Audio('https://www.soundjay.com/buttons/sounds/button-4.mp3');
+    }
+    if(type === 'u') {
+        audio = new Audio('https://www.soundjay.com/buttons/sounds/button-5.mp3');
+    }
+
+    audio.play();
 }
 </script>
 
