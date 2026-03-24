@@ -4,15 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Telegram WebApp -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <title>Tajweed</title>
 
 <style>
-body {
+html, body {
     margin: 0;
-    background: black;
+    padding: 0;
+    height: 100%;
+    background: #0f3b2e;
+    display: flex;
+    justify-content: center;
 }
 
 /* контейнер */
@@ -20,7 +21,7 @@ body {
     position: relative;
     width: 100%;
     max-width: 420px;
-    margin: auto;
+    min-height: 100vh;
 }
 
 /* картинка */
@@ -36,7 +37,7 @@ body {
     border: none;
 }
 
-/* === РАСПОЛОЖЕНИЕ === */
+/* === КНОПКИ === */
 
 /* 1 ряд */
 .btn1 { top: 36%; left: 6%; width: 40%; height: 11%; }
@@ -57,14 +58,29 @@ body {
     width: 80%;
     height: 8%;
 }
+
+/* скрытые экраны */
+.screen {
+    display: none;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.screen button {
+    margin-top: 20px;
+    padding: 10px 20px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- ГЛАВНЫЙ ЭКРАН -->
+<div id="main" class="screen" style="display:block;">
+
 <div class="container">
 
-    <!-- ТВОЯ КАРТИНКА -->
     <img src="menu.png" class="bg">
 
     <!-- КНОПКИ -->
@@ -81,13 +97,49 @@ body {
 
 </div>
 
+</div>
+
+<!-- ЭКРАНЫ -->
+
+<div id="alphabet" class="screen">
+    <h2>Алфавит</h2>
+    <button onclick="goBack()">⬅ Назад</button>
+</div>
+
+<div id="rules" class="screen">
+    <h2>Правила таджвида</h2>
+    <button onclick="goBack()">⬅ Назад</button>
+</div>
+
+<div id="forms" class="screen">
+    <h2>Видоизменение букв</h2>
+    <button onclick="goBack()">⬅ Назад</button>
+</div>
+
+<div id="practice" class="screen">
+    <h2>Практика чтения</h2>
+    <button onclick="goBack()">⬅ Назад</button>
+</div>
+
+<div id="qiraat" class="screen">
+    <h2>Виды чтения</h2>
+    <button onclick="goBack()">⬅ Назад</button>
+</div>
+
+<div id="lessons" class="screen">
+    <h2>Уроки</h2>
+    <button onclick="goBack()">⬅ Назад</button>
+</div>
+
 <script>
 function openModule(module) {
-    Telegram.WebApp.sendData(module);
+    document.getElementById("main").style.display = "none";
+    document.getElementById(module).style.display = "block";
 }
 
 function goBack() {
-    Telegram.WebApp.close();
+    document.querySelectorAll(".screen").forEach(el => el.style.display = "none");
+    document.getElementById("main").style.display = "block";
 }
 </script>
 
