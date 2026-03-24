@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tajweed App</title>
 
-<!-- Арабский шрифт -->
 <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 
 <style>
@@ -31,7 +30,6 @@ body {
     display: block;
 }
 
-/* КНОПКИ НА КАРТИНКЕ */
 .btn {
     position: absolute;
     width: 40%;
@@ -45,13 +43,17 @@ body {
 .types    { top: 66%; left: 6%; }
 .lessons  { top: 66%; right: 6%; }
 
-/* ===== СТРАНИЦА ===== */
-.container {
+/* ===== КНИГА ===== */
+.book {
     max-width: 420px;
-    margin: auto;
+    margin: 20px auto;
+    background: #fdf6e3;
+    color: black;
+    border-radius: 20px;
     padding: 20px;
-    text-align: center;
-    color: white;
+    position: relative;
+    border: 8px solid gold;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
 }
 
 /* АРАБСКИЙ */
@@ -61,15 +63,19 @@ body {
 
 /* БУКВА */
 .letter {
-    font-size: 140px;
-    margin-top: 30px;
+    font-size: 120px;
+    margin-top: 10px;
 }
 
-/* КНОПКА ЗВУКА */
+/* НАЗВАНИЕ */
+.name {
+    font-size: 40px;
+}
+
+/* КНОПКА */
 .sound-btn {
     background: #eee;
-    color: black;
-    padding: 14px;
+    padding: 12px;
     border-radius: 12px;
     margin: 15px 0;
 }
@@ -98,15 +104,26 @@ body {
 
 .harakat small {
     font-size: 14px;
-    color: #333;
 }
 
-/* НАЗАД */
-.back {
-    margin-top: 30px;
-    background: #1f6b4d;
-    padding: 14px;
-    border-radius: 14px;
+/* НОМЕР */
+.page-number {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 22px;
+}
+
+/* НАВИГАЦИЯ */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.nav button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
 }
 </style>
 </head>
@@ -129,11 +146,16 @@ body {
 </div>
 </div>
 
-<!-- ===== АЛИФ ===== -->
+<!-- ===== СТРАНИЦА АЛИФ ===== -->
 <div id="alif" class="page">
-<div class="container">
+<div class="book">
+
+<div class="page-content">
 
 <div class="letter arabic">ا</div>
+
+<div class="arabic name">ألف</div>
+
 <h2>Алиф</h2>
 
 <div class="sound-btn" onclick="playSound('ا')">
@@ -163,7 +185,18 @@ body {
 
 </div>
 
-<div class="back" onclick="openPage('menu')">← Назад</div>
+</div>
+
+<div class="page-number arabic">١</div>
+
+<div class="nav">
+<button onclick="prevPage()">←</button>
+<button onclick="nextPage()">→</button>
+</div>
+
+<div style="text-align:center; margin-top:15px;">
+<button onclick="openPage('menu')">← Назад</button>
+</div>
 
 </div>
 </div>
@@ -174,6 +207,7 @@ function openPage(id) {
     document.getElementById(id).classList.add('active');
 }
 
+/* ЗВУК */
 function playSound(text) {
     let msg = new SpeechSynthesisUtterance(text);
     msg.lang = "ar-SA";
@@ -181,6 +215,22 @@ function playSound(text) {
 
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(msg);
+}
+
+/* ПЕРЕЛИСТЫВАНИЕ */
+let currentPage = 1;
+let totalPages = 28;
+
+function nextPage() {
+    if(currentPage < totalPages) {
+        alert("Следующая буква (пока не добавлена)");
+    }
+}
+
+function prevPage() {
+    if(currentPage > 1) {
+        alert("Предыдущая буква");
+    }
 }
 </script>
 
