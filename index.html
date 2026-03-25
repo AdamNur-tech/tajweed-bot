@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Tajweed App</title>
 
 <style>
+
+/* ОБЩЕЕ */
 body {
   margin: 0;
   background: #0f4c3a;
-  display: flex;
-  justify-content: center;
+  font-family: sans-serif;
 }
 
+/* СТРАНИЦЫ */
+.page {
+  display: none;
+}
+.active {
+  display: block;
+}
+
+/* КОНТЕЙНЕР */
 .container {
   position: relative;
   max-width: 420px;
-  width: 100%;
+  margin: auto;
 }
 
 .bg {
@@ -23,155 +35,140 @@ body {
   display: block;
 }
 
-/* страницы */
-.page { display: none; }
-.active { display: block; }
-
-/* ===== КНОПКА МЕНЮ ===== */
-.menu-btn {
-  position: absolute;
-  width: 220px;
-  height: 100px;
-  background: transparent;
-  border: none;
-}
-
-/* АЛФАВИТ */
-.alphabet {
-  top: 42%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* ===== БУКВА ===== */
-.letter {
-  position: absolute;
-  top: 18%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 80px;
-  font-weight: bold;
-}
-
-.name {
-  position: absolute;
-  top: 28%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 28px;
-  font-weight: bold;
-}
-
-/* ХАРАКАТЫ */
-.btn {
-  position: absolute;
-  width: 50px;
-  height: 70px;
-  border: 2px solid green;
-  background: transparent;
-}
-
-.a { top: 71.7%; left: 23.7%; transform: translate(-50%, -50%); }
-.i { top: 70.6%; left: 36.4%; transform: translate(-50%, -50%); }
-.u { top: 71.3%; left: 46.6%; transform: translate(-50%, -50%); }
-
-/* стрелки */
-.prev {
-  position: absolute;
-  bottom: 12%;
-  left: 10%;
-}
-.next {
-  position: absolute;
-  bottom: 12%;
-  right: 10%;
-}
-
-/* назад */
-.back {
-  position: absolute;
-  bottom: 3%;
-  left: 30%;
-}
-
-/* убрать синий эффект */
+/* УБРАТЬ СИНИЙ КЛИК */
 * {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
+
+/* БУКВА */
+.letter {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 90px;
+  font-weight: bold;
+}
+
+/* НАЗВАНИЕ */
+.name {
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+}
+
+/* ХАРАКАТЫ */
+.click {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* позиция */
+.a { top: 72%; left: 25%; }
+.i { top: 72%; left: 37%; }
+.u { top: 72%; left: 47%; }
+
+/* КНОПКИ */
+.prev {
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+}
+.next {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+}
+.back {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+button {
+  padding: 8px 12px;
+  font-size: 16px;
+}
+
+/* МЕНЮ */
+.menu-btn {
+  display: block;
+  width: 80%;
+  margin: 10px auto;
+  padding: 15px;
+  font-size: 18px;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- ===== МЕНЮ ===== -->
-<div id="menu" class="container page active">
-  <img src="menu.png" class="bg">
+<!-- ================= МЕНЮ ================= -->
+<div id="menu" class="page active">
+  <div class="container">
+    <img src="images/menu.jpg" class="bg">
 
-  <!-- КНОПКА АЛФАВИТ -->
-  <button class="menu-btn alphabet" onclick="openLetters()"></button>
+    <button class="menu-btn" onclick="openPage('alif')">Алиф</button>
+    <button class="menu-btn" onclick="openPage('ba')">Ба</button>
+  </div>
 </div>
 
-<!-- ===== СТРАНИЦА БУКВ ===== -->
-<div id="lettersPage" class="container page">
+<!-- ================= АЛИФ ================= -->
+<div id="alif" class="page">
+  <div class="container">
+    <img src="images/template.png" class="bg">
 
-  <img src="alif.png" class="bg">
+    <div class="letter">ا</div>
+    <div class="name">Алиф</div>
 
-  <div class="letter" id="letter">ا</div>
-  <div class="name" id="name">Алиф</div>
+    <div class="click a" onclick="play('a')">اَ</div>
+    <div class="click i" onclick="play('i')">اِ</div>
+    <div class="click u" onclick="play('u')">اُ</div>
 
-  <button class="btn a" onclick="play()"></button>
-  <button class="btn i" onclick="play()"></button>
-  <button class="btn u" onclick="play()"></button>
+    <button class="prev" onclick="openPage('menu')">←</button>
+    <button class="next" onclick="openPage('ba')">→</button>
+    <button class="back" onclick="openPage('menu')">Назад</button>
+  </div>
+</div>
 
-  <button class="prev" onclick="prev()">⬅</button>
-  <button class="next" onclick="next()">➡</button>
+<!-- ================= БА ================= -->
+<div id="ba" class="page">
+  <div class="container">
+    <img src="images/template.png" class="bg">
 
-  <button class="back" onclick="goMenu()">Назад</button>
+    <div class="letter">ب</div>
+    <div class="name">Ба</div>
 
+    <div class="click a" onclick="play('ba_a')">بَ</div>
+    <div class="click i" onclick="play('ba_i')">بِ</div>
+    <div class="click u" onclick="play('ba_u')">بُ</div>
+
+    <button class="prev" onclick="openPage('alif')">←</button>
+    <button class="next" onclick="openPage('menu')">→</button>
+    <button class="back" onclick="openPage('menu')">Назад</button>
+  </div>
 </div>
 
 <script>
-const letters = [
-  { ar: "ا", name: "Алиф", sound: "sounds/alif_a.mp3" },
-  { ar: "ب", name: "Ба", sound: "sounds/ba_a.mp3" },
-  { ar: "ت", name: "Та", sound: "sounds/ta_a.mp3" }
-];
 
-let index = 0;
-
-function update() {
-  document.getElementById("letter").innerText = letters[index].ar;
-  document.getElementById("name").innerText = letters[index].name;
+/* ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ */
+function openPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-function next() {
-  if (index < letters.length - 1) {
-    index++;
-    update();
-  }
+/* ЗВУК (пока заглушка) */
+function play(sound) {
+  alert("Звук: " + sound);
 }
 
-function prev() {
-  if (index > 0) {
-    index--;
-    update();
-  }
-}
-
-function play() {
-  new Audio(letters[index].sound).play();
-}
-
-function openLetters() {
-  document.getElementById("menu").classList.remove("active");
-  document.getElementById("lettersPage").classList.add("active");
-}
-
-function goMenu() {
-  document.getElementById("lettersPage").classList.remove("active");
-  document.getElementById("menu").classList.add("active");
-}
 </script>
 
 </body>
