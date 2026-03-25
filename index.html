@@ -1,232 +1,183 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Tajweed App</title>
 
 <style>
-
-.click {
-    position: absolute;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-}
-
-/* дополнительно (на всякий) */
-* {
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* ОБЩЕЕ */
 body {
-    margin: 0;
-    background: #0f4c3a;
+  margin: 0;
+  background: #0f4c3a;
+  display: flex;
+  justify-content: center;
 }
 
-/* СТРАНИЦЫ */
+.container {
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+}
+
+.bg {
+  width: 100%;
+  display: block;
+}
+
+/* страницы */
 .page {
-    display: none;
+  display: none;
 }
 .active {
-    display: block;
+  display: block;
 }
 
-/* КОНТЕЙНЕР */
-.container {
-    position: relative;
-    max-width: 420px;
-    margin: auto;
+/* ===== МЕНЮ КНОПКИ ===== */
+.menu-btn {
+  position: absolute;
+  width: 220px;
+  height: 100px;
+  background: transparent;
+  border: none;
 }
 
-/* КАРТИНКА */
-.bg {
-    width: 100%;
-    display: block;
+/* АЛФАВИТ (подогнано примерно) */
+.alphabet {
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* КНОПКИ */
-.click {
-    position: absolute;
-    cursor: pointer;
-    transform: translate(-50%, -50%);
+/* ===== БУКВА ===== */
+.letter {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  font-weight: bold;
 }
 
-/* ===== МЕНЮ (НЕ ТРОГАЛ) ===== */
-
-.btn1 { top: 42%; left: 8%; width: 38%; height: 12%; z-index: 5; }
-.btn2 { top: 42%; right: 8%; width: 38%; height: 12%; z-index: 5; }
-
-.btn3 { top: 57%; left: 8%; width: 38%; height: 12%; z-index: 5; }
-.btn4 { top: 57%; right: 8%; width: 38%; height: 12%; z-index: 5; }
-
-.btn5 { top: 72%; left: 8%; width: 38%; height: 12%; z-index: 5; }
-.btn6 { top: 72%; right: 8%; width: 38%; height: 12%; z-index: 5; }
-
-/* НАЗАД */
-.backMenu {
-    bottom: 2%;
-    left: 25%;
-    width: 50%;
-    height: 8%;
-    z-index: 4;
-}
-
-/* ===== АЛИФ ===== */
-
-/* РОТ */
-.mouth {
-    top: 64%;
-    left: 73%;
-    width: 70px;
-    height: 70px;
+/* НАЗВАНИЕ */
+.name {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  font-weight: bold;
 }
 
 /* ХАРАКАТЫ */
-.click {
-    position: absolute;
+.btn {
+  position: absolute;
+  width: 50px;
+  height: 70px;
+  border: 2px solid green;
+  background: transparent;
 }
 
-/* ТОЛЬКО ХАРАКАТЫ ПО ЦЕНТРУ */
-.a, .i, .u {
-    transform: translate(-50%, -50%);
+.a { top: 71.7%; left: 23.7%; transform: translate(-50%, -50%); }
+.i { top: 70.6%; left: 36.4%; transform: translate(-50%, -50%); }
+.u { top: 71.3%; left: 46.6%; transform: translate(-50%, -50%); }
+
+/* стрелки */
+.prev {
+  position: absolute;
+  bottom: 12%;
+  left: 10%;
+}
+.next {
+  position: absolute;
+  bottom: 12%;
+  right: 10%;
 }
 
-/* ХАРАКАТЫ (ТОЧНО ПО ЦЕНТРУ) */
-.a {
-    top: 71.70%;
-    left: 23.70%;
-    width: 40px;
-    height: 60px;
+/* назад */
+.back {
+  position: absolute;
+  bottom: 3%;
+  left: 30%;
 }
 
-.i {
-    top: 70.66%;
-    left: 36.46%;
-    width: 40px;
-    height: 60px;
-}
-
-.u {
-    top: 71.35%;
-    left: 46.61%;
-    width: 40px;
-    height: 60px;
-}
-
-/* СТРЕЛКИ */
-.prev { bottom: 12%; left: 10%; width: 70px; height: 50px; }
-.next { bottom: 12%; right: 10%; width: 70px; height: 50px; }
-
-/* НАЗАД */
-.back { bottom: 3%; left: 30%; width: 150px; height: 50px; }
-.click:focus {
-    outline: none;
-}
-
+/* убрать синий эффект */
 * {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
-
 </style>
 </head>
 
 <body>
 
 <!-- ===== МЕНЮ ===== -->
-<div id="menu" class="page active">
-  <div class="container">
-    <img src="menu.png" class="bg">
+<div id="menu" class="container page active">
+  <img src="menu.jpg" class="bg">
 
-    <div class="click btn1" onclick="openPage('alif')"></div>
-    <div class="click btn2"></div>
-
-    <div class="click btn3"></div>
-    <div class="click btn4"></div>
-
-    <div class="click btn5"></div>
-    <div class="click btn6"></div>
-
-    <div class="click backMenu"></div>
-  </div>
+  <!-- КНОПКА АЛФАВИТ -->
+  <button class="menu-btn alphabet" onclick="openLetters()"></button>
 </div>
 
-<!-- ===== АЛИФ ===== -->
-<div id="alif" class="page">
-  <div class="container">
-    <img src="alif.png" class="bg">
+<!-- ===== СТРАНИЦА БУКВ ===== -->
+<div id="lettersPage" class="container page">
 
-    <!-- РОТ -->
-    <div class="click mouth" onclick="playAlif()"></div>
+  <img src="alif.jpg" class="bg">
 
-    <!-- ХАРАКАТЫ -->
-    <div class="click a" onclick="playA()"></div>
-    <div class="click i" onclick="playI()"></div>
-    <div class="click u" onclick="playU()"></div>
+  <div class="letter" id="letter">ا</div>
+  <div class="name" id="name">Алиф</div>
 
-    <!-- СТРЕЛКИ -->
-    <div class="click prev"></div>
-    <div class="click next"></div>
+  <button class="btn a" onclick="play()"></button>
+  <button class="btn i" onclick="play()"></button>
+  <button class="btn u" onclick="play()"></button>
 
-    <!-- НАЗАД -->
-    <div class="click back" onclick="openPage('menu')"></div>
+  <button class="prev" onclick="prev()">⬅</button>
+  <button class="next" onclick="next()">➡</button>
 
-  </div>
+  <button class="back" onclick="goMenu()">Назад</button>
+
 </div>
-}
+
 <script>
+const letters = [
+  { ar: "ا", name: "Алиф", sound: "sounds/alif_a.mp3" },
+  { ar: "ب", name: "Ба", sound: "sounds/ba_a.mp3" },
+  { ar: "ت", name: "Та", sound: "sounds/ta_a.mp3" }
+];
 
-/* ПЕРЕКЛЮЧЕНИЕ */
-function openPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+let index = 0;
+
+function update() {
+  document.getElementById("letter").innerText = letters[index].ar;
+  document.getElementById("name").innerText = letters[index].name;
 }
 
-/* ЗВУКИ */
-function playAlif() {
-    new Audio("sounds/alif.mp3").play();
+function next() {
+  if (index < letters.length - 1) {
+    index++;
+    update();
+  }
 }
 
-function playA() {
-    new Audio("sounds/alif_a.mp3").play();
+function prev() {
+  if (index > 0) {
+    index--;
+    update();
+  }
 }
 
-function playI() {
-    new Audio("sounds/alif_i.mp3").play();
+function play() {
+  new Audio(letters[index].sound).play();
 }
 
-function playU() {
-    new Audio("sounds/alif_u.mp3").play();
+/* переходы */
+function openLetters() {
+  document.getElementById("menu").classList.remove("active");
+  document.getElementById("lettersPage").classList.add("active");
 }
-document.addEventListener("click", function(e) {
-    const rect = document.querySelector(".page.active .container").getBoundingClientRect();
 
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-
-    let percentX = (x / rect.width * 100).toFixed(2);
-    let percentY = (y / rect.height * 100).toFixed(2);
-
-    // создаём вывод на экран
-    let box = document.getElementById("coords");
-
-    if (!box) {
-        box = document.createElement("div");
-        box.id = "coords";
-        box.style.position = "fixed";
-        box.style.bottom = "10px";
-        box.style.left = "10px";
-        box.style.background = "black";
-        box.style.color = "white";
-        box.style.padding = "8px";
-        box.style.zIndex = "9999";
-        document.body.appendChild(box);
-    }
-
-    box.innerHTML = "X: " + percentX + "%<br>Y: " + percentY + "%";
-});
+function goMenu() {
+  document.getElementById("lettersPage").classList.remove("active");
+  document.getElementById("menu").classList.add("active");
+}
 </script>
 
 </body>
