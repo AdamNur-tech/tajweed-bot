@@ -8,6 +8,17 @@
 
 <style>
 
+.click {
+    position: absolute;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* дополнительно (на всякий) */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* ОБЩЕЕ */
 body {
     margin: 0;
@@ -110,6 +121,14 @@ body {
 
 /* НАЗАД */
 .back { bottom: 3%; left: 30%; width: 150px; height: 50px; }
+.click:focus {
+    outline: none;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
 
 </style>
 </head>
