@@ -183,7 +183,23 @@ document.addEventListener("click", function(e) {
     let percentX = (x / rect.width * 100).toFixed(2);
     let percentY = (y / rect.height * 100).toFixed(2);
 
-    console.log("X:", percentX + "%", "Y:", percentY + "%");
+    // создаём вывод на экран
+    let box = document.getElementById("coords");
+
+    if (!box) {
+        box = document.createElement("div");
+        box.id = "coords";
+        box.style.position = "fixed";
+        box.style.bottom = "10px";
+        box.style.left = "10px";
+        box.style.background = "black";
+        box.style.color = "white";
+        box.style.padding = "8px";
+        box.style.zIndex = "9999";
+        document.body.appendChild(box);
+    }
+
+    box.innerHTML = "X: " + percentX + "%<br>Y: " + percentY + "%";
 });
 </script>
 
