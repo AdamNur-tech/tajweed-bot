@@ -149,7 +149,18 @@ body {
 
   </div>
 </div>
+document.addEventListener("click", function(e) {
+    const rect = document.querySelector(".container").getBoundingClientRect();
 
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+
+    let percentX = (x / rect.width * 100).toFixed(2);
+    let percentY = (y / rect.height * 100).toFixed(2);
+
+    console.log("X:", percentX + "%", "Y:", percentY + "%");
+);
+}
 <script>
 
 /* ПЕРЕКЛЮЧЕНИЕ */
