@@ -8,7 +8,6 @@
 
 <style>
 
-
 /* ОБЩЕЕ */
 body {
     margin: 0;
@@ -19,7 +18,6 @@ body {
 .page {
     display: none;
 }
-
 .active {
     display: block;
 }
@@ -37,66 +35,63 @@ body {
     display: block;
 }
 
+/* КНОПКИ */
 .click {
     position: absolute;
     cursor: pointer;
-    background: rgba(255, 0, 0, 0.25); /* ВРЕМЕННО, чтобы видеть зоны */
-
-}
+    background: transparent;
 }
 
-/* ===== МЕНЮ (ВОЗВРАЩЕНО КАК БЫЛО) ===== */
+/* ===== МЕНЮ (НЕ ТРОГАЛ) ===== */
 
-.btn1 { top: 42%; left: 8%; width: 38%; height: 12%; }
-.btn2 { top: 42%; right: 8%; width: 38%; height: 12%; }
+.btn1 { top: 42%; left: 8%; width: 38%; height: 12%; z-index: 5; }
+.btn2 { top: 42%; right: 8%; width: 38%; height: 12%; z-index: 5; }
 
-.btn3 { top: 57%; left: 8%; width: 38%; height: 12%; }
-.btn4 { top: 57%; right: 8%; width: 38%; height: 12%; }
+.btn3 { top: 57%; left: 8%; width: 38%; height: 12%; z-index: 5; }
+.btn4 { top: 57%; right: 8%; width: 38%; height: 12%; z-index: 5; }
 
-.btn5 { top: 72%; left: 8%; width: 38%; height: 12%; }
-.btn6 { top: 72%; right: 8%; width: 38%; height: 12%; }
+.btn5 { top: 72%; left: 8%; width: 38%; height: 12%; z-index: 5; }
+.btn6 { top: 72%; right: 8%; width: 38%; height: 12%; z-index: 5; }
 
 /* НАЗАД */
 .backMenu {
-    bottom: 5%;
+    bottom: 2%;
     left: 25%;
     width: 50%;
-    height: 10%;
+    height: 8%;
+    z-index: 4;
 }
 
-/* ===== АЛИФ (ТОЛЬКО ЭТО ИСПРАВЛЕНО) ===== */
+/* ===== АЛИФ ===== */
 
 /* РОТ */
 .mouth {
     top: 60%;
-    left: 70%;
-    width: 22%;
-    height: 14%;
+    left: 60%;
+    width: 70px;
+    height: 70px;
 }
 
-/* ФАТХА (левый блок) */
+/* ХАРАКАТЫ */
 .a {
-    top: 72%;
-    left: 12%;
-    width: 22%;
-    height: 14%;
+    top: 70%;
+    left: 20%;
+    width: 60px;
+    height: 80px;
 }
 
-/* КАСРА (центр) */
 .i {
-    top: 72%;
-    left: 39%;
-    width: 22%;
-    height: 14%;
+    top: 70%;
+    left: 45%;
+    width: 60px;
+    height: 80px;
 }
 
-/* ДАММА (правый блок) */
 .u {
-    top: 72%;
-    left: 66%;
-    width: 22%;
-    height: 14%;
-}
+    top: 70%;
+    left: 70%;
+    width: 60px;
+    height: 80px;
 }
 
 /* СТРЕЛКИ */
@@ -106,19 +101,16 @@ body {
 /* НАЗАД */
 .back { bottom: 3%; left: 30%; width: 150px; height: 50px; }
 
-
-
 </style>
 </head>
 
 <body>
 
-<!-- ===== МЕНЮ (ТВОЯ КАРТИНКА) ===== -->
+<!-- ===== МЕНЮ ===== -->
 <div id="menu" class="page active">
   <div class="container">
     <img src="menu.png" class="bg">
 
-    <!-- КНОПКИ -->
     <div class="click btn1" onclick="openPage('alif')"></div>
     <div class="click btn2"></div>
 
@@ -128,7 +120,6 @@ body {
     <div class="click btn5"></div>
     <div class="click btn6"></div>
 
-    <!-- НАЗАД -->
     <div class="click backMenu"></div>
   </div>
 </div>
@@ -138,7 +129,7 @@ body {
   <div class="container">
     <img src="alif.png" class="bg">
 
-    <!-- МАХРАДЖ -->
+    <!-- РОТ -->
     <div class="click mouth" onclick="playAlif()"></div>
 
     <!-- ХАРАКАТЫ -->
@@ -164,8 +155,7 @@ function openPage(id) {
     document.getElementById(id).classList.add('active');
 }
 
-/* ===== ПРАВИЛЬНЫЕ ЗВУКИ ===== */
-
+/* ЗВУКИ */
 function playAlif() {
     new Audio("sounds/alif.mp3").play();
 }
