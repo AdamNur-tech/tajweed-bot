@@ -3,106 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Tajweed App</title>
 
 <style>
 
 /* ОБЩЕЕ */
 body {
-  margin: 0;
-  background: #0f4c3a;
-  font-family: sans-serif;
+    margin: 0;
+    background: #0f4c3a;
 }
 
 /* СТРАНИЦЫ */
-.page {
-  display: none;
-}
-.active {
-  display: block;
-}
+.page { display: none; }
+.active { display: block; }
 
 /* КОНТЕЙНЕР */
 .container {
-  position: relative;
-  max-width: 420px;
-  margin: auto;
+    position: relative;
+    max-width: 420px;
+    margin: auto;
 }
 
+/* ФОН */
 .bg {
-  width: 100%;
-  display: block;
+    width: 100%;
+    display: block;
 }
-
-/* УБРАТЬ СИНИЙ КЛИК */
-* {
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-
-/* БУКВА */
-.letter {
-  position: absolute;
-  top: 12%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 90px;
-  font-weight: bold;
-}
-
-/* НАЗВАНИЕ */
-.name {
-  position: absolute;
-  top: 22%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 32px;
-}
-
-/* ХАРАКАТЫ */
-.click {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: 28px;
-  cursor: pointer;
-}
-
-/* позиция */
-.a { top: 72%; left: 25%; }
-.i { top: 72%; left: 37%; }
-.u { top: 72%; left: 47%; }
 
 /* КНОПКИ */
-.prev {
-  position: absolute;
-  bottom: 10%;
-  left: 10%;
-}
-.next {
-  position: absolute;
-  bottom: 10%;
-  right: 10%;
-}
-.back {
-  position: absolute;
-  bottom: 3%;
-  left: 50%;
-  transform: translateX(-50%);
+.click {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
-button {
-  padding: 8px 12px;
-  font-size: 16px;
-}
+/* ===== МЕНЮ ===== */
+.btn1 { top: 42%; left: 8%; width: 38%; height: 12%; }
+.btn2 { top: 42%; right: 8%; width: 38%; height: 12%; }
 
-/* МЕНЮ */
-.menu-btn {
-  display: block;
-  width: 80%;
-  margin: 10px auto;
-  padding: 15px;
-  font-size: 18px;
+/* ===== ОБЩИЕ КНОПКИ ===== */
+.prev { top: 88%; left: 18%; width: 70px; height: 50px; }
+.next { top: 88%; left: 82%; width: 70px; height: 50px; }
+.back { top: 88%; left: 50%; width: 150px; height: 50px; }
+
+/* ХАРАКАТЫ */
+.a { top: 71.7%; left: 23.7%; width: 40px; height: 60px; }
+.i { top: 70.66%; left: 36.46%; width: 40px; height: 60px; }
+.u { top: 71.35%; left: 46.61%; width: 40px; height: 60px; }
+
+/* РОТ */
+.mouth {
+    top: 64%;
+    left: 73%;
+    width: 70px;
+    height: 70px;
 }
 
 </style>
@@ -110,63 +66,61 @@ button {
 
 <body>
 
-<!-- ================= МЕНЮ ================= -->
+<!-- ===== МЕНЮ ===== -->
 <div id="menu" class="page active">
-  <div class="container">
-    <img src="menu.png" class="bg">
+    <div class="container">
+        <img src="menu.png" class="bg">
 
-    <button class="menu-btn" onclick="openPage('alif')">Алиф</button>
-    <button class="menu-btn" onclick="openPage('ba')">Ба</button>
-  </div>
+        <div class="click btn1" onclick="openPage('alif')"></div>
+        <div class="click btn2" onclick="openPage('ba')"></div>
+    </div>
 </div>
 
-<!-- ================= АЛИФ ================= -->
+<!-- ===== АЛИФ ===== -->
 <div id="alif" class="page">
-  <div class="container">
-    <img src="template.png" class="bg">
+    <div class="container">
+        <img src="alif.png" class="bg">
 
-    <div class="letter">ا</div>
-    <div class="name">Алиф</div>
+        <div class="click mouth" onclick="playSound('alif')"></div>
 
-    <div class="click a" onclick="play('a')">اَ</div>
-    <div class="click i" onclick="play('i')">اِ</div>
-    <div class="click u" onclick="play('u')">اُ</div>
+        <div class="click a" onclick="playSound('alif_a')"></div>
+        <div class="click i" onclick="playSound('alif_i')"></div>
+        <div class="click u" onclick="playSound('alif_u')"></div>
 
-    <button class="prev" onclick="openPage('menu')">←</button>
-    <button class="next" onclick="openPage('ba')">→</button>
-    <button class="back" onclick="openPage('menu')">Назад</button>
-  </div>
+        <div class="click prev"></div>
+        <div class="click next" onclick="openPage('ba')"></div>
+        <div class="click back" onclick="openPage('menu')"></div>
+    </div>
 </div>
 
-<!-- ================= БА ================= -->
+<!-- ===== БА ===== -->
 <div id="ba" class="page">
-  <div class="container">
-    <img src="images/template.png" class="bg">
+    <div class="container">
+        <img src="ba.png" class="bg">
 
-    <div class="letter">ب</div>
-    <div class="name">Ба</div>
+        <div class="click mouth" onclick="playSound('ba')"></div>
 
-    <div class="click a" onclick="play('ba_a')">بَ</div>
-    <div class="click i" onclick="play('ba_i')">بِ</div>
-    <div class="click u" onclick="play('ba_u')">بُ</div>
+        <div class="click a" onclick="playSound('ba_a')"></div>
+        <div class="click i" onclick="playSound('ba_i')"></div>
+        <div class="click u" onclick="playSound('ba_u')"></div>
 
-    <button class="prev" onclick="openPage('alif')">←</button>
-    <button class="next" onclick="openPage('menu')">→</button>
-    <button class="back" onclick="openPage('menu')">Назад</button>
-  </div>
+        <div class="click prev" onclick="openPage('alif')"></div>
+        <div class="click next"></div>
+        <div class="click back" onclick="openPage('menu')"></div>
+    </div>
 </div>
 
 <script>
 
-/* ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ */
+/* ПЕРЕКЛЮЧЕНИЕ */
 function openPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
-/* ЗВУК (пока заглушка) */
-function play(sound) {
-  alert("Звук: " + sound);
+/* ЗВУК */
+function playSound(name) {
+    new Audio("sounds/" + name + ".mp3").play();
 }
 
 </script>
