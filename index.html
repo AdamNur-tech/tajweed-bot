@@ -105,11 +105,32 @@ body {
         <div class="click u" onclick="playSound('ba_u')"></div>
 
         <div class="click prev" onclick="openPage('alif')"></div>
-        <div class="click next"></div>
+        <div class="click next"onclick="openPage('Ta')"></div>
         <div class="click back" onclick="openPage('menu')"></div>
     </div>
 </div>
 
+<!-- ===== ТА ===== -->
+<div id="ta" class="page">
+    <div class="container">
+        <img src="Ta.png" class="bg">
+
+        <!-- РОТ -->
+        <div class="click mouth" onclick="playSound('ta')"></div>
+
+        <!-- ХАРАКАТЫ -->
+        <div class="click a" onclick="playSound('ta_a')"></div>
+        <div class="click i" onclick="playSound('ta_i')"></div>
+        <div class="click u" onclick="playSound('ta_u')"></div>
+
+        <!-- СТРЕЛКИ -->
+        <div class="click prev" onclick="openPage('ba')"></div>
+        <div class="click next"></div>
+
+        <!-- В МЕНЮ -->
+        <div class="click back" onclick="openPage('menu')"></div>
+    </div>
+</div>
 <script>
 
 /* ПЕРЕКЛЮЧЕНИЕ */
