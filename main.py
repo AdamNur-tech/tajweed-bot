@@ -247,7 +247,17 @@ def callback(call):
         bot.send_photo(chat_id, photo, reply_markup=markup)
 
     elif call.data == "connect":
-        bot.send_message(chat_id, "🔗 Соединение букв скоро будет")
+        user["comb_index"] = 0
+        combinations_lesson(chat_id,
+call.from_user.id)
+    elif call.data == "comb_sound":
+        i = user["comb_index"]
+        text = COMBINATIONS[i]["ar"]
+        bot.send_voice(chat_id, open(generate_audio(text), "rb"))
+
+    elif call.data == "next_comb":
+        user["comb_index"] += 1
+        combinations_lesson(chat_id, call.from_user.id)
 
     elif call.data == "tajweed":
         bot.send_message(chat_id, "📜 Правила таджвида скоро будут")
