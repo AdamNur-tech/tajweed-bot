@@ -292,10 +292,10 @@ def callback(call):
 {ALIF_CARDS[0]}
 """
 
-    markup = InlineKeyboardMarkup()
-    markup.add(
-        InlineKeyboardButton("🔊", callback_data="alif_sound"),
-        InlineKeyboardButton("➡️", callback_data="next_alif")
+        markup = InlineKeyboardMarkup()
+        markup.add(
+            InlineKeyboardButton("🔊", callback_data="alif_sound"),
+            InlineKeyboardButton("➡️", callback_data="next_alif")
     )
 
     bot.send_message(chat_id, text, reply_markup=markup)
@@ -320,10 +320,10 @@ def callback(call):
 {ALIF_CARDS[i]}
 """
 
-    markup = InlineKeyboardMarkup()
-    markup.add(
-        InlineKeyboardButton("🔊", callback_data="alif_sound"),
-        InlineKeyboardButton("➡️", callback_data="next_alif")
+        markup = InlineKeyboardMarkup()
+        markup.add(
+            InlineKeyboardButton("🔊", callback_data="alif_sound"),
+            InlineKeyboardButton("➡️", callback_data="next_alif")
     )
 
     bot.send_message(chat_id, text, reply_markup=markup)
