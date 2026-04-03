@@ -89,6 +89,11 @@ def forms_lesson(chat_id):
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
+COMBINATIONS = [
+    {"ar": "با", "ru": "ба"},
+    {"ar": "بت", "ru": "бат"},
+]
+
 # ===== USER =====
 def get_user(user_id):
     if user_id not in users:
@@ -98,7 +103,8 @@ def get_user(user_id):
             "streak":0,
             "current":"Алфавит",
             "step":0,
-            "letter_index":0
+            "letter_index":0,
+            "comb_index":0
         }
     return users[user_id]
 
