@@ -281,6 +281,7 @@ def callback(call):
         photo = open("arabic_letters_table_fixed.png", "rb")
         bot.send_photo(chat_id, photo, reply_markup=markup)
 
+    # ✅ ВОТ ЗДЕСЬ БЫЛА ГЛАВНАЯ ПРОБЛЕМА
     elif call.data == "connect":
         user["comb_index"] = 0
 
@@ -294,29 +295,28 @@ def callback(call):
 
         markup = InlineKeyboardMarkup()
         markup.row(
-            InlineKeyboardButton("🔊",   callback_data="alif_sound"),
+            InlineKeyboardButton("🔊", callback_data="alif_sound"),
             InlineKeyboardButton("➡️", callback_data="next_alif")
-    )
+        )
 
         bot.send_message(chat_id, text, reply_markup=markup)
-
 
     elif call.data == "alif_sound":
         i = user["comb_index"]
         text = ALIF_CARDS[i].split(" — ")[0]
         bot.send_voice(chat_id, open(generate_audio(text), "rb"))
 
-
+    # ✅ И ТУТ БЫЛА ВТОРАЯ ОШИБКА
     elif call.data == "next_alif":
         user["comb_index"] += 1
 
-    if user["comb_index"] >= len(ALIF_CARDS):
-        bot.send_message(chat_id, "✅ Урок завершён")
-        return
+        if user["comb_index"] >= len(ALIF_CARDS):
+            bot.send_message(chat_id, "✅ Урок завершён")
+            return
 
-    i = user["comb_index"]
+        i = user["comb_index"]
 
-    text = f"""
+        text = f"""
 🔗 СОЕДИНЕНИЕ С АЛИФОМ
 
 {ALIF_CARDS[i]}
@@ -326,12 +326,9 @@ def callback(call):
         markup.row(
             InlineKeyboardButton("🔊", callback_data="alif_sound"),
             InlineKeyboardButton("➡️", callback_data="next_alif")
-    )
+        )
 
         bot.send_message(chat_id, text, reply_markup=markup)
-
-       
- 
 
     elif call.data == "tajweed":
         bot.send_message(chat_id, "📜 Правила таджвида скоро будут")
