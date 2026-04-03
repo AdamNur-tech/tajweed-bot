@@ -270,7 +270,7 @@ def callback(call):
         bot.send_photo(chat_id, photo, reply_markup=markup)
 
     elif call.data == "connect":
-    text = """
+        text = """
 🔗 СОЕДИНЕНИЕ С АЛИФОМ
 
 📌 Алиф (ا) не соединяется справа
@@ -295,9 +295,7 @@ def callback(call):
 
 
 
-        user["comb_index"] = 0
-        combinations_lesson(chat_id,
-call.from_user.id)
+       
     elif call.data == "comb_sound":
         i = user["comb_index"]
         text = COMBINATIONS[i]["ar"]
