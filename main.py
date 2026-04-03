@@ -282,9 +282,9 @@ def callback(call):
         bot.send_photo(chat_id, photo, reply_markup=markup)
 
     elif call.data == "connect":
-    user["comb_index"] = 0
+        user["comb_index"] = 0
 
-    text = f"""
+        text = f"""
 🔗 СОЕДИНЕНИЕ С АЛИФОМ
 
 📌 Алиф (ا) не соединяется справа
@@ -292,23 +292,23 @@ def callback(call):
 {ALIF_CARDS[0]}
 """
 
-    markup = InlineKeyboardMarkup()
-    markup.row(
-        InlineKeyboardButton("🔊", callback_data="alif_sound"),
-        InlineKeyboardButton("➡️", callback_data="next_alif")
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🔊",   callback_data="alif_sound"),
+            InlineKeyboardButton("➡️", callback_data="next_alif")
     )
 
-    bot.send_message(chat_id, text, reply_markup=markup)
+        bot.send_message(chat_id, text, reply_markup=markup)
 
 
-elif call.data == "alif_sound":
-    i = user["comb_index"]
-    text = ALIF_CARDS[i].split(" — ")[0]
-    bot.send_voice(chat_id, open(generate_audio(text), "rb"))
+    elif call.data == "alif_sound":
+        i = user["comb_index"]
+        text = ALIF_CARDS[i].split(" — ")[0]
+        bot.send_voice(chat_id, open(generate_audio(text), "rb"))
 
 
-elif call.data == "next_alif":
-    user["comb_index"] += 1
+    elif call.data == "next_alif":
+        user["comb_index"] += 1
 
     if user["comb_index"] >= len(ALIF_CARDS):
         bot.send_message(chat_id, "✅ Урок завершён")
@@ -322,13 +322,13 @@ elif call.data == "next_alif":
 {ALIF_CARDS[i]}
 """
 
-    markup = InlineKeyboardMarkup()
-    markup.row(
-        InlineKeyboardButton("🔊", callback_data="alif_sound"),
-        InlineKeyboardButton("➡️", callback_data="next_alif")
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🔊", callback_data="alif_sound"),
+            InlineKeyboardButton("➡️", callback_data="next_alif")
     )
 
-    bot.send_message(chat_id, text, reply_markup=markup)
+        bot.send_message(chat_id, text, reply_markup=markup)
 
        
  
