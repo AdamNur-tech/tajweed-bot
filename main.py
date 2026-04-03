@@ -230,6 +230,23 @@ def alphabet_lesson(chat_id, user_id):
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
+def combinations_lesson(chat_id, user_id):
+    user = get_user(user_id)
+    i = user["comb_index"]
+
+    if i >= len(COMBINATIONS):
+        bot.send_message(chat_id, "✅ Конец")
+        learn_menu(chat_id, user_id)
+        return
+
+    item = COMBINATIONS[i]
+
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔊", callback_data="comb_sound"))
+    markup.add(InlineKeyboardButton("➡️", callback_data="next_comb"))
+
+    bot.send_message(chat_id, f"🔗 {item['ar']}", reply_markup=markup)
+
 # ===== CALLBACK =====
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
