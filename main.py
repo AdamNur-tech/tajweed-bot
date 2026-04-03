@@ -90,7 +90,7 @@ def forms_lesson(chat_id):
     bot.send_message(chat_id, text, reply_markup=markup)
 
 COMBINATIONS = [
-    {"ar": "با", "ru": "ба"},
+    {"ar": "ا", "ru": "Alif"},
     {"ar": "بت", "ru": "бат"},
 ]
 
@@ -270,6 +270,31 @@ def callback(call):
         bot.send_photo(chat_id, photo, reply_markup=markup)
 
     elif call.data == "connect":
+    text = """
+🔗 СОЕДИНЕНИЕ С АЛИФОМ
+
+📌 Алиф (ا) не соединяется справа
+
+ب+ا=با — ба  
+ت+ا=تا — та  
+ثا — са  
+جا — джа  
+حا — ха  
+خا — ха  
+سا — са  
+شا — ша  
+فا — фа  
+قا — ка  
+لا — ля  
+ما — ма  
+نا — на  
+ها — ха  
+"""
+
+    bot.send_message(chat_id, text)
+
+
+
         user["comb_index"] = 0
         combinations_lesson(chat_id,
 call.from_user.id)
