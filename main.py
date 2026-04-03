@@ -89,9 +89,21 @@ def forms_lesson(chat_id):
 
     bot.send_message(chat_id, text, reply_markup=markup)
 
-COMBINATIONS = [
-    {"ar": "با", "ru": "ба"},
-    {"ar": "بت", "ru": "бат"},
+ALIF_CARDS = [
+    "با — ба",
+    "تا — та",
+    "ثا — са",
+    "جا — джа",
+    "حا — ха",
+    "خا — ха",
+    "سا — са",
+    "شا — ша",
+    "فا — фа",
+    "قا — ка",
+    "لا — ля",
+    "ما — ма",
+    "نا — на",
+    "ها — ха",
 ]
 
 # ===== USER =====
@@ -270,40 +282,54 @@ def callback(call):
         bot.send_photo(chat_id, photo, reply_markup=markup)
 
     elif call.data == "connect":
-        text = """
+        user["comb_index"] = 0
+
+        text = f"""
 🔗 СОЕДИНЕНИЕ С АЛИФОМ
 
 📌 Алиф (ا) не соединяется справа
 
-ب+ا=با — ба  
-ت+ا=تا — та  
-ثا — са  
-جا — джа  
-حا — ха  
-خا — ха  
-سا — са  
-شا — ша  
-فا — фа  
-قا — ка  
-لا — ля  
-ما — ма  
-نا — на  
-ها — ха  
+{ALIF_CARDS[0]}
 """
 
-        bot.send_message(chat_id, text)
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("🔊", callback_data="alif_sound"),
+        InlineKeyboardButton("➡️", callback_data="next_alif")
+    )
 
+    bot.send_message(chat_id, text, reply_markup=markup)
 
+    elif call.data == "alif_sound":
+        i = user["comb_index"]
+        text = ALIF_CARDS[i].split(" — ")[0]
+        bot.send_voice(chat_id,                                                 open(generate_audio(text), "rb"))
+
+    elif call.data == "next_alif":
+        user["comb_index"] += 1
+
+        if user["comb_index"] >= len(ALIF_CARDS):
+        bot.send_message(chat_id, "✅ Урок завершён")
+        return
+
+    i = user["comb_index"]
+
+    text = f"""
+🔗 СОЕДИНЕНИЕ С АЛИФОМ
+
+{ALIF_CARDS[i]}
+"""
+
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("🔊", callback_data="alif_sound"),
+        InlineKeyboardButton("➡️", callback_data="next_alif")
+    )
+
+    bot.send_message(chat_id, text, reply_markup=markup)
 
        
-    elif call.data == "comb_sound":
-        i = user["comb_index"]
-        text = COMBINATIONS[i]["ar"]
-        bot.send_voice(chat_id, open(generate_audio(text), "rb"))
-
-    elif call.data == "next_comb":
-        user["comb_index"] += 1
-        combinations_lesson(chat_id, call.from_user.id)
+ 
 
     elif call.data == "tajweed":
         bot.send_message(chat_id, "📜 Правила таджвида скоро будут")
