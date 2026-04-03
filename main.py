@@ -327,9 +327,6 @@ def learn_menu(chat_id, user_id):
     markup.add(InlineKeyboardButton("⬅️ Назад", callback_data="back_main"))
 
     bot.send_message(chat_id, "📚 ОБУЧЕНИЕ", reply_markup=markup)
-@bot.callback_query_handler(func=lambda call: call.data == "connect")
-def connect_module(call):
-    bot.send_message(call.message.chat.id, "🔗 Соединение букв скоро будет")
 
 @bot.callback_query_handler(func=lambda call: call.data == "tajweed")
 def tajweed_module(call):
