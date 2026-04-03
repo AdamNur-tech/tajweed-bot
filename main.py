@@ -90,7 +90,7 @@ def forms_lesson(chat_id):
     bot.send_message(chat_id, text, reply_markup=markup)
 
 COMBINATIONS = [
-    {"ar": "ا", "ru": "Alif"},
+    {"ar": "با", "ru": "ба"},
     {"ar": "بت", "ru": "бат"},
 ]
 
@@ -368,13 +368,6 @@ def learn_menu(chat_id, user_id):
 
     bot.send_message(chat_id, "📚 ОБУЧЕНИЕ", reply_markup=markup)
 
-@bot.callback_query_handler(func=lambda call: call.data == "tajweed")
-def tajweed_module(call):
-    bot.send_message(call.message.chat.id, "📜 Правила таджвида скоро будут")
-
-@bot.callback_query_handler(func=lambda call: call.data == "reading")
-def reading_module(call):
-    bot.send_message(call.message.chat.id, "📖 Виды чтения скоро будут")
 
 @bot.callback_query_handler(func=lambda call: call.data == "practice_read")
 def practice_module(call):
